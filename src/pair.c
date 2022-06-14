@@ -36,5 +36,5 @@ Pair *Pair_new(char *first, char *second) {
  * @param pair: Apuntador a estructura Pair.
  */
 void Pair_print(Pair *pair) {
-    printf("<%s, %s>", pair->first, pair->second);
+    printf("('%s', '%s')", pair->first, pair->second);
 }
