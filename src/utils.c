@@ -78,24 +78,33 @@ void replace_words(char *path, Node *head) {
 
         /* Por cada palabra en la lista */
         for (cur_node = head; cur_node != NULL; cur_node = cur_node->next) {
-            char *word_from = cur_node->data->first;
+            char *cur_word = cur_node->data->first;
+            char *replace_word = cur_node->data->second;
             char cmp_char;
+            int i = 0;
 
             /* Por cada letra en la palabra */
-            for (cmp_char = 0; cmp_char < strlen(cur_node->data->word1); cmp_char++) {
-                /* Si la letra del archivo es igual a la letra de la palabra */
-                if (cur_char == cur_node->data->word1[cmp_char]) {
-                    /* Imprime la palabra */
-                    printf("%s", cur_node->data->word2);
-                    /* Salta a la siguiente palabra */
+            for (cmp_char = cur_word[i]; cmp_char != '\0';
+                cmp_char = cur_word[i]
+            ) {
+                /* Si no coincide con la letra actual, pasa a la siguiente */
+                if (cur_char != cmp_char) {
+                    fseek(fp, -i, SEEK_CUR);
                     break;
                 }
+                /* Si coincide, pasa a la siguiente palabra */
+                cur_char = fgetc(fp);
+                i++;
             }
-            char *word1 = p->word1;
-            char *word2 = p->word2;
-        if (cur_char == EOF)
-            break;
 
+            /* Si la palabra coincide, reemplaza la palabra */
+            if (cmp_char == '\0') {
+                printf("%s", replace_word);
+                break;
+            }
+        }
+
+        /* Si no se coincidió con una palabra, imprime el caracter */
         printf("%c", cur_char);
     }
 }
