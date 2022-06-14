@@ -1,5 +1,5 @@
 /**
- * Utiles de la libreria.
+ * Utiles para el programa sustituir.
  *
  * Autor: Christopher Gómez.
  * Fecha: 13-06-2022.
@@ -13,6 +13,9 @@
 #include "list.h"
 #include "pair.h"
 
+/**
+ *
+ */
 void verify_malloc(void *ptr) {
     if (!ptr) {
         printf("Hubo en error asignando memoria.\n");
@@ -20,6 +23,9 @@ void verify_malloc(void *ptr) {
     }
 }
 
+/**
+ *
+ */
 FILE *open_file(char *path, char *mode) {
     FILE *fp = fopen(path, mode);
     if (!fp) {
@@ -74,39 +80,35 @@ void replace_words(char *path, Node *head) {
 
     /* Por cada letra del archivo a leer */
     while ((cur_char = fgetc(fp)) != EOF) {
-        Node *cur_node;
+        Node *cur_node = head;
+        long int cur_pos = ftell(fp) - 1;
 
         /* Por cada palabra en la lista */
-        for (cur_node = head; cur_node != NULL; cur_node = cur_node->next) {
+        for (; cur_node; cur_node = cur_node->next) {
             char *cur_word = cur_node->data->first;
-            char cmp_char;
-            int i = 0;
 
             /* Por cada letra en la palabra */
-            for (cmp_char = cur_word[i]; cmp_char != '\0';
-                cmp_char = cur_word[i]
-            ) {
-                /* Si no coincide con la letra actual, pasa a la
-                siguiente palabra */
-                if (cur_char != cmp_char) {
-                    fseek(fp, -i-1, SEEK_CUR);
-                    cur_char = fgetc(fp);
-                    break;
-                }
-
-                /* Si coincide, pasa a la siguiente palabra */
+            for (;cur_char == *cur_word; cur_word++)
                 cur_char = fgetc(fp);
-                i++;
-            }
 
-            /* Si la palabra coincide, reemplaza la palabra */
-            if (cmp_char == '\0') {
+            /* Si la palabra coincide, la reemplaza */
+            if (*cur_word == '\0') {
                 printf("%s", cur_node->data->second);
+                fseek(fp, -1, SEEK_CUR);
                 break;
             }
+            
+            /* Si no, pasa a la siguiente de la lista */
+            fseek(fp, cur_pos, SEEK_SET);
+            cur_char = fgetc(fp);
         }
 
-        /* Si no se coincidió con ninguna palabra, imprime el caracter */
-        printf("%c", cur_char);
+        /* Si se llegó al final de la lista, se imprime el caracter */
+        if (!cur_node)
+            printf("%c", cur_char);
+
+        /* Si se llegó al final del archivo, termina el ciclo */
+        if (cur_char == EOF)
+            break;
     }
 }

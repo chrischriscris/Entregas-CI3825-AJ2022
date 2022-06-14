@@ -17,6 +17,7 @@
 
 int main(int argc, char **argv) {
     Node *word_list;
+    int i;
 
     if (argc < 3) {
         printf("Uso: sustituir <archivo pares> {lista de nombres de archivos}.\n");
@@ -25,9 +26,11 @@ int main(int argc, char **argv) {
 
     word_list = extract_words_from_file(argv[1]);
 
-    List_print(word_list);
-
-    replace_words(argv[2], word_list);
+    for (i = 2; i < argc; i++) {
+        replace_words(argv[i], word_list);
+        if (i + 1!= argc)
+            printf("\n--\n");
+    }
 
     return 0;
 }
