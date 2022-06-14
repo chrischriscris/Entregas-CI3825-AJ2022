@@ -71,10 +71,9 @@ void replace_words(char *path, Node *head) {
     char cur_char;
 
     fp = open_file(path, "r");
-    cur_char = fgetc(fp);
 
     /* Por cada letra del archivo a leer */
-    while (cur_char != EOF) {
+    while ((cur_char = fgetc(fp)) != EOF) {
         Node *cur_node;
 
         /* Por cada palabra en la lista */
@@ -107,7 +106,6 @@ void replace_words(char *path, Node *head) {
             }
         }
 
-        cur_char = fgetc(fp);
         /* Si no se coincidió con ninguna palabra, imprime el caracter */
         printf("%c", cur_char);
     }
