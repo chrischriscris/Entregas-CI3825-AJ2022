@@ -3,11 +3,11 @@ CFLAGS = -ansi -Wall -pedantic
 
 all: sustituir
 
-sustituir:  pair.o list.o sustituir.o utils.o
-	$(CC) $(CFLAGS) -o sustituir sustituir.o pair.o list.o utils.o
+sustituir: main.o pair.o list.o utils.o
+	$(CC) $(CFLAGS) -o sustituir main.o pair.o list.o utils.o
 
-sustituir.o: sustituir.c
-	$(CC) $(CFLAGS) -c sustituir.c
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c
 
 list.o: list.c
 	$(CC) $(CFLAGS) -c list.c
