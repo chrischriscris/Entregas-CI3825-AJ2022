@@ -70,7 +70,13 @@ Node *extract_words_from_file(char *path) {
         
         /* Aquí se guarda el par y se enlaza a la lista. */
         p = Pair_new(strcpy(word1, p1), strcpy(word2, p2));
-        List_push(&l, p, p1_length);
+        verify_pointer(p);
+
+        if (!List_push(&l, p, p1_length)) {
+            printf("Hubo en error agregando el par %s:%s a la lista.\n",
+                word1, word2);
+            exit(1);
+        }
     }
     fclose(fp);
 
