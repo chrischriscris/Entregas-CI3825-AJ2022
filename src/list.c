@@ -30,6 +30,7 @@ Node *List_new() {
     head->next = NULL;
     head->prev = NULL;
     head->data = NULL;
+
     return head;
 }
 
@@ -107,5 +108,5 @@ void List_print(Node *head) {
             printf(", ");
         cur = cur->next;
     }
-    printf("]\n");
+    printf("]");
 }
