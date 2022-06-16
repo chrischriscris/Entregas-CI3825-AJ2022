@@ -1,12 +1,15 @@
 /**
- * Implementación de lista circular doblemente enlazada.
+ * Implementación de lista circular, donde cada nodo contiene un
+ * par de cadenas de caracteres y la longitud de la cadena de la
+ * primera coordenada .
+ * 
+ * Soporta las operaciones de creación e inserción ordenada.
  *
  * Autor: Christopher Gómez.
  * Fecha: 04-06-2022.
  */
 #include <stdlib.h>
 #include <stdio.h>
-
 #include "list.h"
 #include "pair.h"
 

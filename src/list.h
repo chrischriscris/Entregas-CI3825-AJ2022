@@ -2,9 +2,7 @@
 #define __LIST_H__
 
 #include <aio.h>
-
 #include "pair.h"
-
 
 /**
  * Estructura de nodo para lista circular doblemente enlazada.

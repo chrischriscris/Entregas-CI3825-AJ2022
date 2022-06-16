@@ -2,10 +2,11 @@
 .vscode
 ansidoc.c
 enunciado.pdf
-Makefile
+/Makefile
 plan.txt
 runtest
 testlab.c
+out
 
 # Prerequisites
 *.d

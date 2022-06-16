@@ -8,15 +8,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 #include "utils.h"
 #include "list.h"
 #include "pair.h"
 
 /**
- *
+ * Verifica que un puntero no sea nulo. Si es nulo, termina el programa.
+ * 
+ * @param ptr Puntero a verificar.
  */
-void verify_malloc(void *ptr) {
+void verify_pointer(void *ptr) {
     if (!ptr) {
         printf("Hubo en error asignando memoria.\n");
         exit(1);
@@ -24,7 +25,10 @@ void verify_malloc(void *ptr) {
 }
 
 /**
- *
+ * Abre un archivo y verifica que no haya habido errores.
+ * 
+ * @param path Ruta del archivo a abrir.
+ * @return Puntero al archivo abierto.
  */
 FILE *open_file(char *path, char *mode) {
     FILE *fp = fopen(path, mode);
@@ -36,11 +40,12 @@ FILE *open_file(char *path, char *mode) {
 }
 
 /**
- * Lee un archivo con el formato indicado y extrae pares de cadenas
- * de caracteres en una lista enlazada.
- 
+ * Lee un archivo con el formato indicado y extrae pares de cadenas de
+ * caracteres en una lista ordenada en orden descendiente del tamaño de
+ * la cadena.
+ * 
  * @param path: Cadena de caracteres con la ruta del archivo a leer.
- * @return Apuntador a lista enlazada de pares de palabras.
+ * @return Apuntador a la cabeza de una lista enlazada de pares de palabras.
  */
 Node *extract_words_from_file(char *path) {
     FILE *fp;
@@ -50,7 +55,7 @@ Node *extract_words_from_file(char *path) {
     fp = open_file(path, "r");
 
     l = List_new();
-    verify_malloc(l);
+    verify_pointer(l);
 
     /* Lee hasta encontrar ':' y escribe en p1,
     luego lee hasta encontrar un salto de línea. */
@@ -60,8 +65,8 @@ Node *extract_words_from_file(char *path) {
         char *word2 = malloc(strlen(p2) + 1);
         Pair *p;
 
-        verify_malloc(word1);
-        verify_malloc(word2);
+        verify_pointer(word1);
+        verify_pointer(word2);
         
         /* Aquí se guarda el par y se enlaza a la lista. */
         p = Pair_new(strcpy(word1, p1), strcpy(word2, p2));
@@ -72,6 +77,19 @@ Node *extract_words_from_file(char *path) {
     return l;
 }
 
+/**
+ * Lee un archivo y reemplaza en él todas las ocurrencias de las cadenas de
+ * caracteres indicadas por otras, contenidas en una lista con pares de cadenas.
+ * 
+ * El análisis del archivo se hace de izquierda a derecha, por lo que se
+ * reemplazan primero las ocurrencias más a la izquierda, tomando como prioridad
+ * a las cadena en su orden de aparición en la lista.
+ * 
+ * Escribe en salida estándar el resultado.
+ * 
+ * @param path: Cadena de caracteres con la ruta del archivo a leer.
+ * @return Apuntador a la cabeza de una lista enlazada de pares de palabras.
+ */
 void replace_words(char *path, Node *head) {
     FILE *fp;
     char cur_char;
@@ -97,18 +115,16 @@ void replace_words(char *path, Node *head) {
                 fseek(fp, -1, SEEK_CUR);
                 break;
             }
-            
+
             /* Si no, pasa a la siguiente de la lista */
             fseek(fp, cur_pos, SEEK_SET);
             cur_char = fgetc(fp);
         }
 
         /* Si se llegó al final de la lista, se imprime el caracter */
-        if (!cur_node)
-            printf("%c", cur_char);
+        if (!cur_node) printf("%c", cur_char);
 
         /* Si se llegó al final del archivo, termina el ciclo */
-        if (cur_char == EOF)
-            break;
+        if (cur_char == EOF) break;
     }
 }

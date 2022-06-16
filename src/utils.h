@@ -3,6 +3,7 @@
 
 #include "list.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 FILE *open_file(char *path, char *mode);
 void verify_malloc(void *ptr);
