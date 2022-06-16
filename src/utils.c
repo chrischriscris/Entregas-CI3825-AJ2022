@@ -107,6 +107,8 @@ void replace_words(char *path, Node *head) {
         Node *cur_node = head;
         long int cur_pos = ftell(fp) - 1;
 
+        if (!cur_node->data) cur_node = NULL;
+
         /* Por cada palabra en la lista */
         for (; cur_node; cur_node = cur_node->next) {
             char *cur_word = cur_node->data->first;

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic
+CFLAGS = -ansi -Wall -pedantic -g
 
 all: sustituir
 

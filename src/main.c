@@ -25,6 +25,8 @@ int main(int argc, char **argv) {
 
     word_list = extract_words_from_file(argv[1]);
 
+    List_print(word_list);
+    printf("\n");
     for (i = 2; i < argc; i++) {
         replace_words(argv[i], word_list);
         if (i + 1!= argc)
