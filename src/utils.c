@@ -8,9 +8,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "utils.h"
-#include "list.h"
+
 #include "pair.h"
+#include "list.h"
+#include "utils.h"
 
 /**
  * Verifica que un puntero no sea nulo. Si es nulo, termina el programa.
