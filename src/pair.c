@@ -28,7 +28,7 @@ Pair *Pair_new(char *first, char *second) {
 }
 
 /**
- * Imprime el par de cadenas de caracteres.
+ * Imprime una representación en string del par de cadenas de caracteres.
  *
  * Para propósitos de depuración.
  *

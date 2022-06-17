@@ -1,7 +1,7 @@
 /**
  * Implementación de lista circular, donde cada nodo contiene un
  * par de cadenas de caracteres y la longitud de la cadena de la
- * primera coordenada .
+ * primera coordenada.
  * 
  * Soporta las operaciones de creación e inserción ordenada.
  *
@@ -91,7 +91,7 @@ u_int8_t List_push(Node **list, Pair *data, int length) {
 }
 
 /**
- * Imprime todos los elementos de la lista.
+ * Imprime una representación en string de todos los pares de la lista.
  *
  * Para propósitos de depuración.
  *

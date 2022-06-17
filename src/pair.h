@@ -5,7 +5,7 @@
  * Estructura de par de cadenas de caracteres.
  */
 typedef struct Pair {
-    char *first, *second; /* Primer y segundo elemento del par */
+    char *first, *second; /** Primer y segundo elemento del par */
 } Pair;
 
 Pair *Pair_new(char *first, char *second);

@@ -4,7 +4,7 @@
  * Autor: Christopher Gómez.
  * Fecha: 13-06-2022.
  */
-#define PAIRMATCH "%[^:]:%[^\n]\n"
+#define PAIRMATCH "%[^:\n]:%[^\n]\n"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -73,8 +73,7 @@ Node *extract_words_from_file(char *path) {
         verify_pointer(p);
 
         if (!List_push(&l, p, p1_length)) {
-            printf("Hubo en error agregando el par %s:%s a la lista.\n",
-                word1, word2);
+            printf("Hubo en error agregando el par %s:%s a la lista.\n", word1, word2);
             exit(1);
         }
     }
@@ -104,10 +103,8 @@ void replace_words(char *path, Node *head) {
 
     /* Por cada letra del archivo a leer */
     while ((cur_char = fgetc(fp)) != EOF) {
-        Node *cur_node = head;
+        Node *cur_node = head->data? head: NULL;
         long int cur_pos = ftell(fp) - 1;
-
-        if (!cur_node->data) cur_node = NULL;
 
         /* Por cada palabra en la lista */
         for (; cur_node; cur_node = cur_node->next) {
