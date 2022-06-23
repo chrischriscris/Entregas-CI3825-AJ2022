@@ -140,7 +140,7 @@ int replace_words(char *path, Node *head) {
 
     fclose(fp);
     fclose(tmp_fp);
-    
+
     /* Borra el archivo original y renombra el archivo temporal, dándole
     los mismos permisos que el original */
     if (rename(tmp_filename, path) == -1) {

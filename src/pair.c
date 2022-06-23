@@ -28,6 +28,12 @@ Pair *Pair_new(char *first, char *second) {
     return p;
 }
 
+void Pair_destroy(Pair *p) {
+    free(p->first);
+    free(p->second);
+    free(p);
+}
+
 /**
  * Imprime una representación en string del par de cadenas de caracteres.
  *

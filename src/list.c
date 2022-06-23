@@ -91,6 +91,19 @@ int List_push(Node **list, Pair *data, int length) {
     return 0;
 }
 
+void List_destroy(Node *head) {
+    Node *cur = head;
+    Node *next;
+
+    while (cur) {
+        next = cur->next;
+
+        Pair_destroy(cur->data);
+        free(cur);
+        cur = next;
+    }
+}
+
 /**
  * Imprime una representación en string de todos los pares de la lista.
  *
