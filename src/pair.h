@@ -9,6 +9,7 @@ typedef struct Pair {
 } Pair;
 
 Pair *Pair_new(char *first, char *second);
+void Pair_destroy(Pair *pair);
 void Pair_print(Pair *pair);
 
 #endif

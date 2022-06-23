@@ -16,6 +16,7 @@ typedef struct Node {
 
 Node *List_new();
 int List_push(Node **head, Pair *data, int length);
+void List_destroy(Node *head);
 void List_print(Node *head);
 
 #endif
