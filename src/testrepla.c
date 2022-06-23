@@ -28,7 +28,6 @@
 
 #include "pair.h"
 #include "list.h"
-#include "utils.h"
 #include "repla.h"
 
 int main(int argc, char **argv) {

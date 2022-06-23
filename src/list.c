@@ -41,10 +41,10 @@ Node *List_new() {
  * @param head: Apuntador a la direccion de la cabeza de la lista.
  * @param data: Dato a almacenar en el nodo, de tipo Pair.
  * @param length: Longitud de la primera palabra del par.
- * @return 1 si la operación fue exitosa.
- *     0 en caso contrario.
+ * @return 0 si la operación fue exitosa.
+ *     -1 en caso contrario.
  */
-u_int8_t List_push(Node **list, Pair *data, int length) {
+int List_push(Node **list, Pair *data, int length) {
     Node *head = *list;
 
     if (!head->data) {
@@ -56,7 +56,7 @@ u_int8_t List_push(Node **list, Pair *data, int length) {
         dinámicamente */
         Node *new_node = malloc(sizeof(Node));
         if (!new_node)
-            return 0;
+            return -1;
 
         /* Coloca el dato en el nodo */
         new_node->data = data;
@@ -88,7 +88,7 @@ u_int8_t List_push(Node **list, Pair *data, int length) {
         }
     }
 
-    return 1;
+    return 0;
 }
 
 /**

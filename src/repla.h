@@ -4,6 +4,6 @@
 #include "list.h"
 
 Node *extract_words_from_file(char *path);
-void replace_words(char *path, Node *l);
+int replace_words(char *path, Node *l);
 
 #endif

@@ -15,7 +15,7 @@ typedef struct Node {
 } Node;
 
 Node *List_new();
-u_int8_t List_push(Node **head, Pair *data, int length);
+int List_push(Node **head, Pair *data, int length);
 void List_print(Node *head);
 
 #endif

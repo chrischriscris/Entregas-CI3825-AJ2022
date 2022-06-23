@@ -1,10 +1,10 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic
+CFLAGS = -ansi -Wall -pedantic -g
 
 all:
 	echo "all: nothing"
 
-tests: testrepla
+test: testrepla
 
 testrepla: testrepla.o repla.o list.o pair.o utils.o
 	$(CC) $(CFLAGS) -o testrepla testrepla.o repla.o list.o pair.o utils.o

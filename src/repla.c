@@ -25,10 +25,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "pair.h"
 #include "list.h"
-#include "utils.h"
 #include "repla.h"
 
 #define PAIRMATCH "%[^:\n]:%[^\n]\n"
@@ -40,16 +40,18 @@
  * 
  * @param path: Cadena de caracteres con la ruta del archivo a leer.
  * @return Apuntador a la cabeza de una lista enlazada de pares de palabras.
+ *     NULL en caso de error.
  */
 Node *extract_words_from_file(char *path) {
     FILE *fp;
-    char p1[50], p2[50];
     Node *l;
+    char p1[50], p2[50];
 
-    fp = open_file(path, "r");
+    fp = fopen(path, "r");
+    if (!fp) return NULL;
 
     l = List_new();
-    verify_pointer(l);
+    if (!l) return NULL;
 
     /* Lee hasta encontrar ':' y escribe en p1,
     luego lee hasta encontrar un salto de línea. */
@@ -59,17 +61,13 @@ Node *extract_words_from_file(char *path) {
         char *word2 = malloc(strlen(p2) + 1);
         Pair *p;
 
-        verify_pointer(word1);
-        verify_pointer(word2);
+        if (!word1 || !word2) return NULL;
         
         /* Aquí se guarda el par y se enlaza a la lista. */
         p = Pair_new(strcpy(word1, p1), strcpy(word2, p2));
-        verify_pointer(p);
+        if (!p) return NULL;
 
-        if (!List_push(&l, p, p1_length)) {
-            printf("Hubo en error agregando el par %s:%s a la lista.\n", word1, word2);
-            exit(1);
-        }
+        if (List_push(&l, p, p1_length) == -1) return NULL;
     }
     fclose(fp);
 
@@ -84,20 +82,33 @@ Node *extract_words_from_file(char *path) {
  * reemplazan primero las ocurrencias más a la izquierda, tomando como prioridad
  * a las cadena en su orden de aparición en la lista.
  * 
- * Escribe en salida estándar el resultado.
+ * Destruye la lista enlazada de pares de cadenas al terminar.
  * 
  * @param path: Cadena de caracteres con la ruta del archivo a leer.
- * @return Apuntador a la cabeza de una lista enlazada de pares de palabras.
+ * @param head: Apuntador a la cabeza de una lista enlazada de pares de palabras.
+ * @return 0 si la operación fue exitosa.
+ *     -1 en caso de error.
  */
-void replace_words(char *path, Node *head) {
+int replace_words(char *path, Node *head) {
     FILE *fp;
-    char cur_char;
+    struct stat st;
+    FILE *tmp_fp;
+    char *tmp_filename;
+    int cur_char;
 
-    fp = open_file(path, "r");
+    /* Abre el archivo original y guarda sus permisos */
+    fp = fopen(path, "r");
+    if (!fp) return -1;
+    stat(path, &st);
+
+    /* Crea y abre archivo temporal para hacer la sustitución */
+    tmp_filename = "tmp.txt";
+    tmp_fp = fopen(tmp_filename, "w");
+    if (!tmp_fp) return -1;
 
     /* Por cada letra del archivo a leer */
     while ((cur_char = fgetc(fp)) != EOF) {
-        Node *cur_node = head->data? head: NULL;
+        Node *cur_node = head->data ? head : NULL;
         long int cur_pos = ftell(fp) - 1;
 
         /* Por cada palabra en la lista */
@@ -110,7 +121,7 @@ void replace_words(char *path, Node *head) {
 
             /* Si la palabra coincide, la reemplaza */
             if (*cur_word == '\0') {
-                printf("%s", cur_node->data->second);
+                fprintf(tmp_fp, "%s", cur_node->data->second);
                 fseek(fp, -1, SEEK_CUR);
                 break;
             }
@@ -121,9 +132,22 @@ void replace_words(char *path, Node *head) {
         }
 
         /* Si se llegó al final de la lista, se imprime el caracter */
-        if (!cur_node) printf("%c", cur_char);
+        if (!cur_node) fprintf(tmp_fp, "%c", cur_char);
 
         /* Si se llegó al final del archivo, termina el ciclo */
         if (cur_char == EOF) break;
     }
+
+    fclose(fp);
+    fclose(tmp_fp);
+    
+    /* Borra el archivo original y renombra el archivo temporal, dándole
+    los mismos permisos que el original */
+    if (rename(tmp_filename, path) == -1) {
+        remove(tmp_filename);
+        return -1; 
+    }
+    chmod(path, st.st_mode);
+
+    return 0;
 }
