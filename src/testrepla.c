@@ -47,6 +47,7 @@ int main(int argc, char **argv) {
         if (i + 1!= argc)
             printf("\n--\n");
     }
+    List_destroy(word_list);
 
     return 0;
 }
