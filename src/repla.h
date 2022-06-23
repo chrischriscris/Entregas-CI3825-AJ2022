@@ -1,5 +1,5 @@
-#ifndef __REPLA_H__
-#define __REPLA_H__
+#ifndef __WC_H__
+#define __WC_H__
 
 #include <stdio.h>
 #include "list.h"
