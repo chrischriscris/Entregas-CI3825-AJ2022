@@ -41,7 +41,7 @@
  * @return String con el nombre generado.
  */
 char *rand_filename() {
-    char *filename = malloc(sizeof(char) * 16);
+    char *filename = malloc(16);
     char rand_num_str[8];
     int r;
 
