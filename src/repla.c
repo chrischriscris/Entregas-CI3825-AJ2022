@@ -36,7 +36,7 @@
 
 /**
  * Genera una string con un nombre de archivo generado aleatoriamente con
- * el formato tmp_<rand_num>.tmp.
+ * el formato tmp_<rand_num>.tmp. (Memoria dinámica, liberar)
  *
  * @return String con el nombre generado.
  */

@@ -6,6 +6,6 @@
 
 Node *extract_words_from_file(char *path);
 int replace_words(char *path, Node *l);
-FILE *open_tmp_file();
+char *rand_filename();
 
 #endif
