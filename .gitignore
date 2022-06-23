@@ -1,5 +1,15 @@
 # MINE
 enunciado.pdf
+tests
+.vscode
+plan.txt
+out
+src_pdf
+entrega
+
+# Ejecutables
+repla
+testrepla
 
 # Prerequisites
 *.d
