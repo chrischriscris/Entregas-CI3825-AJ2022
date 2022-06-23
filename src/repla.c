@@ -26,12 +26,37 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #include "pair.h"
 #include "list.h"
 #include "repla.h"
 
 #define PAIRMATCH "%[^:\n]:%[^\n]\n"
+
+/**
+ * Genera una string con un nombre de archivo generado aleatoriamente con
+ * el formato tmp_<rand_num>.tmp.
+ *
+ * @return String con el nombre generado.
+ */
+char *rand_filename() {
+    char *filename = malloc(sizeof(char) * 16);
+    char rand_num_str[8];
+    int r;
+
+    /* Genera un número aleatorio del 0 al 9999999 */
+    srand(clock());
+    r = rand() % 10000000;
+
+    /* Crea la string del nombre tmp_repla_<rand_num>.tmp */
+    sprintf(rand_num_str, "%.7d", r);
+    sprintf(filename, "tmp_");
+    strcat(filename, rand_num_str);
+    strcat(filename, ".tmp");
+
+    return filename;
+}
 
 /**
  * Lee un archivo con el formato indicado y extrae pares de cadenas de
@@ -92,8 +117,8 @@ Node *extract_words_from_file(char *path) {
 int replace_words(char *path, Node *head) {
     FILE *fp;
     struct stat st;
-    FILE *tmp_fp;
     char *tmp_filename;
+    FILE *tmp_fp;
     int cur_char;
 
     /* Abre el archivo original y guarda sus permisos */
@@ -102,7 +127,7 @@ int replace_words(char *path, Node *head) {
     stat(path, &st);
 
     /* Crea y abre archivo temporal para hacer la sustitución */
-    tmp_filename = "tmp.txt";
+    tmp_filename = rand_filename();
     tmp_fp = fopen(tmp_filename, "w");
     if (!tmp_fp) return -1;
 
@@ -147,6 +172,8 @@ int replace_words(char *path, Node *head) {
         remove(tmp_filename);
         return -1; 
     }
+
+    free(tmp_filename);
     chmod(path, st.st_mode);
 
     return 0;
