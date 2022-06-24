@@ -3,7 +3,8 @@
  * par de cadenas de caracteres y la longitud de la cadena de la
  * primera coordenada.
  * 
- * Soporta las operaciones de creación e inserción ordenada.
+ * Soporta las operaciones de creación, destrucciónn e inserción
+ * ordenada.
  *
  * Autor: Christopher Gómez.
  * Fecha: 04-06-2022.
@@ -91,6 +92,11 @@ int List_push(Node **list, Pair *data, int length) {
     return 0;
 }
 
+/**
+ * Libera la memoria asignada para la lista.
+ *
+ * @param head: Apuntador a la direccion de la cabeza de la lista.
+ */
 void List_destroy(Node *head) {
     Node *cur = head;
     Node *next;

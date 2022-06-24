@@ -28,6 +28,11 @@ Pair *Pair_new(char *first, char *second) {
     return p;
 }
 
+/**
+ * Libera la memoria asignada para un par.
+ *
+ * @param p: Apuntador a Pair a liberar.
+ */
 void Pair_destroy(Pair *p) {
     free(p->first);
     free(p->second);
