@@ -4,6 +4,8 @@
 #include <sys/stat.h>
 #include <time.h>
 
+#include "wc.h"
+
 void count_chars_and_lines(char *path, int *chars, int *lines) {
     FILE *fp;
     int c;

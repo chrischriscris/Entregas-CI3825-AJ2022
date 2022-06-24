@@ -10,7 +10,7 @@ entrega
 src_pdf
 repla
 wc
-dir_traversal
+walk_dir_tree
 
 # Prerequisites
 *.d
