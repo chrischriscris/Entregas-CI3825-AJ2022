@@ -6,12 +6,21 @@
 
 #include "wc.h"
 
-void count_chars_and_lines(char *path, int *chars, int *lines) {
+/**
+ * Cuenta el número de caracteres y líneas de un archivo.
+ * 
+ * @param path: String con la ruta del archivo.
+ * @param chars (out): Número de caracteres.
+ * @param lines (out): Número de líneas.
+ * @return: 0 si la operación fue exitosa.
+ *     -1 en caso contrario.
+ */
+int count_chars_and_lines(char *path, int *chars, int *lines) {
     FILE *fp;
     int c;
 
     fp = fopen(path, "r");
-    if (!fp) return;
+    if (!fp) return -1;
 
     *chars = 0;
     *lines = 0;
@@ -24,4 +33,5 @@ void count_chars_and_lines(char *path, int *chars, int *lines) {
     }
 
     fclose(fp);
+    return 0;
 }

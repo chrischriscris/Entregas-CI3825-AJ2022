@@ -26,7 +26,8 @@ int is_directory(char *path) {
  * Recorre un arbol de directorios en DFS.
  * 
  * @param dirpath: String con la ruta del directorio a recorrer.
- * @param callback: Funcion a llamar por cada elemento encontrado.
+ * @param callback: Funcion a llamar por cada elemento encontrado,
+ *     retorna 0, distinto de 0 en error.
  * @param data: Datos a pasar a la funcion callback.
  * @return 0 en caso de exito.
  *     -1 en caso de error.
