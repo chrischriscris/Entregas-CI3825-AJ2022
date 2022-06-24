@@ -3,15 +3,14 @@ enunciado.pdf
 .vscode
 plan.txt
 out
-src_pdf
-entrega
-home
-testsRepla
-testwc
 
-# Ejecutables
+# Directorios
+home
+entrega
+src_pdf
 repla
-testrepla
+wc
+dir_traversal
 
 # Prerequisites
 *.d

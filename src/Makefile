@@ -1,18 +1,19 @@
 CC = gcc
 CFLAGS = -ansi -Wall -pedantic -g
 
-all:
-	echo "all: nothing"
+all: repla/testrepla wc/testwc
 
-test: testrepla testwc
+test: repla/testrepla wc/testwc
 
 # =========== repla =============
 
-testrepla: testrepla.o repla.o list.o pair.o utils.o
-	$(CC) $(CFLAGS) -o testrepla testrepla.o repla.o list.o pair.o utils.o
+# -.-.-.-.--.-.-.-.--.-.-.-.--.-.-.-.--.-.-.-.-
+repla/testrepla: repla/testrepla.o repla.o list.o pair.o
+	$(CC) $(CFLAGS) -o repla/testrepla repla/testrepla.o repla.o list.o pair.o
 
-testrepla.o: testrepla.c
-	$(CC) $(CFLAGS) -c testrepla.c
+repla/testrepla.o: repla/testrepla.c
+	$(CC) $(CFLAGS) -o repla/testrepla.o -c repla/testrepla.c
+# -.-.-.-.--.-.-.-.--.-.-.-.--.-.-.-.--.-.-.-.-
 
 repla.o: repla.c
 	$(CC) $(CFLAGS) -c repla.c
@@ -25,17 +26,25 @@ pair.o: pair.c
 
 # =========== wc =============
 
-testwc: testwc.o wc.o
-	$(CC) $(CFLAGS) -o testwc testwc.o wc.o
+# -.-.-.-.--.-.-.-.--.-.-.-.--.-.-.-.--.-.-.-.-
+wc/testwc: wc/testwc.o wc.o
+	$(CC) $(CFLAGS) -o wc/testwc wc/testwc.o wc.o
 
-testwc.o: testwc.c
-	$(CC) $(CFLAGS) -c testwc.c
+wc/testwc.o: wc/testwc.c
+	$(CC) $(CFLAGS) -o wc/testwc.o -c wc/testwc.c
+# -.-.-.-.--.-.-.-.--.-.-.-.--.-.-.-.--.-.-.-.-
 
 wc.o: wc.c
 	$(CC) $(CFLAGS) -c wc.c
+
+# =========== misc =============
 
 utils.o: utils.c
 	$(CC) $(CFLAGS) -c utils.c
 
 clean:
-	rm *.o testrepla
+	rm *.o
+
+# =========== tests =============
+cleantest:
+	rm wc/testwc wc/testwc.o repla/testrepla repla/testrepla.o
