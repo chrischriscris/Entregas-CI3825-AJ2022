@@ -60,4 +60,4 @@ clean:
 
 # =========== tests =============
 cleantest:
-	rm wc/testwc wc/testwc.o repla/testrepla repla/testrepla.o walk_dir_tree/testwdt
+	rm wc/testwc wc/testwc.o repla/testrepla repla/testrepla.o walk_dir_tree/testwdt walk_dir_tree/testwdt.o
