@@ -3,11 +3,11 @@ CFLAGS = -ansi -Wall -pedantic -g
 
 all: myutil
 
-test: repla/testrepla wc/testwc walk_dir_tree/testwdt codif/testcodif
+test: repla/testrepla wc/testwc wdt/testwdt codif/testcodif
 
 # =========== ejecutable =============
-myutil: main.o repla.o list.o pair.o wc.o walk_dir_tree.o codif.o
-	$(CC) $(CFLAGS) -o myutil main.o repla.o list.o pair.o wc.o walk_dir_tree.o codif.o
+myutil: main.o repla.o list.o pair.o wc.o utils.o codif.o
+	$(CC) $(CFLAGS) -o myutil main.o repla.o list.o pair.o wc.o utils.o codif.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
@@ -34,8 +34,8 @@ pair.o: pair.c
 # =========== wc =============
 
 ################################################
-wc/testwc: wc/testwc.o wc.o
-	$(CC) $(CFLAGS) -o wc/testwc wc/testwc.o wc.o
+wc/testwc: wc/testwc.o wc.o utils.o
+	$(CC) $(CFLAGS) -o wc/testwc wc/testwc.o wc.o utils.o
 
 wc/testwc.o: wc/testwc.c
 	$(CC) $(CFLAGS) -o wc/testwc.o -c wc/testwc.c
@@ -57,18 +57,18 @@ codif/testcodif.o: codif/testcodif.c
 	$(CC) $(CFLAGS) -o codif/testcodif.o -c codif/testcodif.c
 ################################################
 
-# =========== walk_dir_tree =============
+# =========== wdt =============
 
 ################################################
-walk_dir_tree/testwdt: walk_dir_tree/testwdt.o walk_dir_tree.o
-	$(CC) $(CFLAGS) -o walk_dir_tree/testwdt walk_dir_tree/testwdt.o walk_dir_tree.o
+wdt/testwdt: wdt/testwdt.o utils.o
+	$(CC) $(CFLAGS) -o wdt/testwdt wdt/testwdt.o utils.o
 
-walk_dir_tree/testwdt.o: walk_dir_tree/testwdt.c
-	$(CC) $(CFLAGS) -o walk_dir_tree/testwdt.o -c walk_dir_tree/testwdt.c
+wdt/testwdt.o: wdt/testwdt.c
+	$(CC) $(CFLAGS) -o wdt/testwdt.o -c wdt/testwdt.c
 ################################################
 
-walk_dir_tree.o: walk_dir_tree.c
-	$(CC) $(CFLAGS) -c walk_dir_tree.c
+utils.o: utils.c
+	$(CC) $(CFLAGS) -c utils.c
 
 # =========== misc =============
 clean:
@@ -76,4 +76,4 @@ clean:
 
 # =========== tests =============
 cleantest:
-	rm wc/testwc wc/testwc.o repla/testrepla repla/testrepla.o walk_dir_tree/testwdt walk_dir_tree/testwdt.o myutil
+	rm wc/testwc wc/testwc.o repla/testrepla repla/testrepla.o wdt/testwdt wdt/testwdt.o myutil

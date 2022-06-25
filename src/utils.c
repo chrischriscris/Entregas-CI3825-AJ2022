@@ -4,7 +4,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#include "walk_dir_tree.h"
+#include "utils.h"
 
 /**
  * Verifica si una ruta es un directorio.
@@ -84,6 +84,7 @@ int walk_dir_tree(char *root) {
                     printf("%s\n", full_path);
                 }
             }
+
             free(full_path);
         }
     }
