@@ -22,21 +22,6 @@ int is_directory(char *path) {
 }
 
 /**
- * Verifica si un archivo es enlace simbólico.
- *
- * @param path: String con la ruta del archivo a verificar.
- * @return 1 si es un enlace simbólico.
- *     0 en caso contrario.
- *     -1 en caso de error.
- */
-int is_symlink(char *path) {
-    struct stat st;
-    if (stat(path, &st) != 0) return -1;
-
-    return S_ISLNK(st.st_mode);
-}
-
-/**
  * Verifica si un archivo es regular.
  *
  * @param path: String con la ruta del archivo a verificar.
