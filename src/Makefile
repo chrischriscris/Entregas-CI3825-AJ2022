@@ -1,9 +1,16 @@
 CC = gcc
 CFLAGS = -ansi -Wall -pedantic -g
 
-all:
+all: myutil
 
-test: repla/testrepla wc/testwc walk_dir_tree/testwdt
+test: repla/testrepla wc/testwc walk_dir_tree/testwdt codif/testcodif
+
+# =========== ejecutable =============
+myutil: main.o repla.o list.o pair.o wc.o walk_dir_tree.o codif.o
+	$(CC) $(CFLAGS) -o myutil main.o repla.o list.o pair.o wc.o walk_dir_tree.o codif.o
+
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c
 
 # =========== repla =============
 
@@ -37,6 +44,19 @@ wc/testwc.o: wc/testwc.c
 wc.o: wc.c
 	$(CC) $(CFLAGS) -c wc.c
 
+# =========== codif =============
+
+codif.o: codif.c
+	$(CC) $(CFLAGS) -c codif.c
+
+################################################
+codif/testcodif: codif/testcodif.o codif.o
+	$(CC) $(CFLAGS) -o codif/testcodif codif/testcodif.o codif.o
+
+codif/testcodif.o: codif/testcodif.c
+	$(CC) $(CFLAGS) -o codif/testcodif.o -c codif/testcodif.c
+################################################
+
 # =========== walk_dir_tree =============
 
 ################################################
@@ -51,10 +71,6 @@ walk_dir_tree.o: walk_dir_tree.c
 	$(CC) $(CFLAGS) -c walk_dir_tree.c
 
 # =========== misc =============
-
-utils.o: utils.c
-	$(CC) $(CFLAGS) -c utils.c
-
 clean:
 	rm *.o
 

@@ -3,6 +3,7 @@ enunciado.pdf
 .vscode
 plan.txt
 out
+myutil
 
 # Directorios
 home
@@ -11,6 +12,7 @@ src_pdf
 repla
 wc
 walk_dir_tree
+codif
 
 # Prerequisites
 *.d
