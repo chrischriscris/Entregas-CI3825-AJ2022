@@ -63,7 +63,12 @@ int wc(char *path, int *chars, int *lines) {
                 if (is_regular_file(full_path)) {
                     int n, m;
 
-                    count_chars_and_lines(full_path, &n, &m);
+                    if (count_chars_and_lines(full_path, &n, &m) == -1) {
+                        fprintf(stderr, "Hubo un error abriendo navegando por \
+                            el directorio %s.", full_path);
+                        free(full_path);
+                        continue;
+                    }
                     *chars += n;
                     *lines += m;
                 }

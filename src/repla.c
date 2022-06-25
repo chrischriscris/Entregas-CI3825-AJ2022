@@ -42,7 +42,6 @@
  */
 char *rand_filename() {
     char *filename = malloc(16);
-    char rand_num_str[8];
     int r;
 
     /* Genera un número aleatorio del 0 al 9999999 */
@@ -50,11 +49,7 @@ char *rand_filename() {
     r = rand() % 10000000;
 
     /* Crea la string del nombre tmp_repla_<rand_num>.tmp */
-    sprintf(rand_num_str, "%.7d", r);
-    sprintf(filename, "tmp_");
-    strcat(filename, rand_num_str);
-    strcat(filename, ".tmp");
-
+    sprintf(filename, "tmp_%.7d.tmp", r);
     return filename;
 }
 
