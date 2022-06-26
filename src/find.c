@@ -34,13 +34,13 @@ int ifind(char *path, void *str) {
     return 0;
 }
 
-int cfind(char *path, void *str_word) {
+int cfind(char *path, void *args) {
     FILE *fp;
     char cur_char;
 
     /* Obtiene las palabras del argumento */
-    char *str = ((char **) str_word)[0];
-    char *word = ((char **) str_word)[1];
+    char *str = ((char **) args)[0];
+    char *word = ((char **) args)[1];
     char *cur_word = word;
 
     /* Si el nombre del archivo no contiene str, retorna */

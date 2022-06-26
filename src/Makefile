@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic
+CFLAGS = -ansi -Wall -pedantic -g
 
 all: myutil
 
@@ -31,8 +31,4 @@ utils.o: utils.c
 	$(CC) $(CFLAGS) -c utils.c
 
 clean:
-	rm *.o
-
-# =========== tests =============
-cleantest:
-	rm wc/testwdt wc/testwdt.o myutil
+	rm *.o myutil

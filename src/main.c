@@ -56,6 +56,8 @@ int main(int argc, char **argv) {
     */
     char *root;
     char *path;
+    char **args;
+    Node *list;
 
     /* Inicialización de codif */
     /*
@@ -64,10 +66,38 @@ int main(int argc, char **argv) {
     */
 
    /* Inicialización de find */
+   /*
     root = argv[1];
     path = argv[2];
     walk_dir_tree(root, find, NULL, path, NULL);
+    */
 
-    
+    /* Inicialización de ifind */
+    /*
+    root = argv[1];
+    path = argv[2];
+    walk_dir_tree(root, ifind, NULL, path, NULL);
+    */
+
+    /* Inicialización de cfind */
+    /*
+    root = argv[1];
+    args = malloc(sizeof(char *) * 2);
+    args[0] = argv[2];
+    args[1] = argv[3];
+    walk_dir_tree(root, cfind, NULL, args, NULL);
+    free(args);
+    */
+
+    /* Inicialización de repla */
+    root = argv[1];
+    path = argv[2];
+    list = extract_words_from_file(path);
+    if (!list) {
+        printf("Error al leer el archivo.\n");
+        return 1;
+    }
+    walk_dir_tree(root, repla, NULL, list, NULL);
+
     return 0;
 }

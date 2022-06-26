@@ -90,12 +90,13 @@ Node *extract_words_from_file(char *path) {
  * @return 0 si la operación fue exitosa.
  *     -1 en caso de error.
  */
-int replace_words(char *path, Node *head) {
+int repla(char *path, void *l) {
     FILE *fp;
     struct stat st;
     char *tmp_filename;
     FILE *tmp_fp;
     char cur_char;
+    Node *head = l;
 
     /* Abre el archivo original y guarda sus permisos */
     fp = fopen(path, "r");
