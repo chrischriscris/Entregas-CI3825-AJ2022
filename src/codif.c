@@ -8,7 +8,7 @@
  * @return 0 en caso de exito.
  *    -1 en caso de error.
  */
-int reverse_file(char *path) {
+int codif(char *path) {
     int lpos = 0;
     int rpos;
     FILE *fp1 = fopen(path, "r+");

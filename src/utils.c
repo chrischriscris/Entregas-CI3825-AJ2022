@@ -51,11 +51,10 @@ int is_regular_file(char *path) {
  */
 int walk_dir_tree(char *root, int (*fn1)(char *, void *),
     int (*fn2)(char *, void *), void *arg1, void *arg2) {
-    DIR *dir;
     struct dirent *entry;
 
     /* Abre el directorio */
-    dir = opendir(root);
+    DIR *dir = opendir(root);
     if (!dir) return -1;
 
     while ((entry = readdir(dir))) {

@@ -16,11 +16,10 @@
  *     -1 en caso de error.
  */
 int wc(char *path, int *chars, int *lines) {
-    DIR *dir;
     struct dirent *entry;
 
     /* Abre el directorio */
-    dir = opendir(path);
+    DIR *dir = opendir(path);
     if (!dir) return -1;
 
     *chars = 0;
