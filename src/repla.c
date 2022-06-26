@@ -95,7 +95,7 @@ int replace_words(char *path, Node *head) {
     struct stat st;
     char *tmp_filename;
     FILE *tmp_fp;
-    int cur_char;
+    char cur_char;
 
     /* Abre el archivo original y guarda sus permisos */
     fp = fopen(path, "r");

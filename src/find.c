@@ -2,8 +2,15 @@
 #include <stdio.h>
 #include <string.h>
 
+/**
+ * Imprime la ruta si 
+ * 
+ * @param path 
+ * @param str 
+ * @return int 
+ */
 int find(char *path, void *str) {
-    char *str_cmp = !str ? path : (char *) str;
+    char *str_cmp = !str ? path : str;
     if (strstr(path, str_cmp) != NULL) {
         printf("%s\n", path);
         return 1;
@@ -11,8 +18,15 @@ int find(char *path, void *str) {
     return 0;
 }
 
+/**
+ * Encuentra un .
+ * 
+ * @param path 
+ * @param str 
+ * @return int 
+ */
 int ifind(char *path, void *str) {
-    char *str_cmp = !str ? path : (char *) str;
+    char *str_cmp = !str ? path : str;
     if (strcasestr(path, str_cmp) != NULL) {
         printf("%s\n", path);
         return 1;
@@ -22,7 +36,7 @@ int ifind(char *path, void *str) {
 
 int cfind(char *path, void *str_word) {
     FILE *fp;
-    int cur_char;
+    char cur_char;
 
     /* Obtiene las palabras del argumento */
     char *str = ((char **) str_word)[0];
