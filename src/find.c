@@ -3,11 +3,12 @@
 #include <string.h>
 
 /**
- * Imprime la ruta si 
+ * Imprime la ruta si contiene a str.
  * 
- * @param path 
- * @param str 
- * @return int 
+ * @param path: String con una ruta.
+ * @param str: String con una subcadena a buscar.
+ * @return 1 si contiene a str.
+ *     0 en caso contrario.
  */
 int find(char *path, void *str) {
     char *str_cmp = !str ? path : str;
@@ -19,11 +20,13 @@ int find(char *path, void *str) {
 }
 
 /**
- * Encuentra un .
+ * Imprime la ruta si contiene a str, sin sesibilidad a
+ * mayúsculas/minúsculas.
  * 
- * @param path 
- * @param str 
- * @return int 
+ * @param path: String con una ruta.
+ * @param str: String con una subcadena a buscar.
+ * @return 1 si contiene a str.
+ *     0 en caso contrario.
  */
 int ifind(char *path, void *str) {
     char *str_cmp = !str ? path : str;
@@ -34,6 +37,17 @@ int ifind(char *path, void *str) {
     return 0;
 }
 
+
+/**
+ * Imprime la ruta de un archivo regular si esta contiene a str
+ * y además el archivo contiene a word dentro.
+ * 
+ * @param path: String con una ruta.
+ * @param args: Arreglo {str, word}.
+ * @return 1 si la ruta contiene str y tiene a word en su contenido.
+ *     0 en caso contrario.
+ *     -1 em casp de algún eror.
+ */
 int cfind(char *path, void *args) {
     FILE *fp;
     char cur_char;
