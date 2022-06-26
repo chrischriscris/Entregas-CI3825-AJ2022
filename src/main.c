@@ -4,7 +4,6 @@
 #include "wc.h"
 #include "find.h"
 #include "list.h"
-#include "pair.h"
 #include "codif.h"
 #include "repla.h"
 #include "utils.h"
