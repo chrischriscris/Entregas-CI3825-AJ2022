@@ -9,9 +9,7 @@
 
 /**
  * Recorre un arbol de directorios en DFS, contando las líneas y
- * caracteres ...
- * 
- * Se llama con chars = 0 y lines = 0
+ * caracteres.
  * 
  * @param path: String con la ruta del directorio raiz a recorrer.
  * @return 0 en caso de exito.
@@ -38,6 +36,7 @@ int wc(char *path, int *chars, int *lines) {
         } else {
             char *full_path = malloc(strlen(path) + strlen(d_name) + 2);
             int is_dir;
+            int n, m;
 
             /* Construye la ruta completa */
             sprintf(full_path, "%s/%s", path, d_name);
@@ -46,8 +45,6 @@ int wc(char *path, int *chars, int *lines) {
             if (is_dir == -1) return -1;
 
             if (is_dir) {
-                int n, m;
-
                 /* Si es directorio, se explora recursivamente */
                 if (wc(full_path, &n, &m) == -1) {
                     fprintf(stderr, "Hubo un error abriendo navegando por \
@@ -55,24 +52,21 @@ int wc(char *path, int *chars, int *lines) {
                     free(full_path);
                     continue;
                 }
-                *chars += n;
-                *lines += m;
             } else {
                 /* De lo contrario, se hace una operación sobre el archivo,
                 de ser regular*/
                 if (is_regular_file(full_path)) {
-                    int n, m;
-
                     if (count_chars_and_lines(full_path, &n, &m) == -1) {
                         fprintf(stderr, "Hubo un error abriendo navegando por \
                             el directorio %s.", full_path);
                         free(full_path);
                         continue;
                     }
-                    *chars += n;
-                    *lines += m;
                 }
             }
+            *chars += n;
+            *lines += m;
+
             free(full_path);
         }
     }

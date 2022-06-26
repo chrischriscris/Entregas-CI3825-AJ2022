@@ -41,8 +41,8 @@ int is_regular_file(char *path) {
  * 
  * @param root: String con la ruta del directorio raiz a recorrer.
  * @param fn1: Funcion a llamar por cada archivo regular en el árbol,
- *     de directorios, que retorna 0 si fue exitosa y -1 en caso de
- *     error. Si es NULL no se llama.
+ *     de directorios, que retorna un entero positivo si fue exitosa
+ *     y -1 en caso de error. Si es NULL no se llama.
  * @param fn2: Análoga a la anterior, se llama por cada archivo del árbol.
  * @param arg1: Apuntador al argumento que recibirá fn1.
  * @param arg2: Apuntador al argumento que recibirá fn2.

@@ -6,8 +6,8 @@ all: myutil
 test: repla/testrepla wc/testwc wdt/testwdt codif/testcodif
 
 # =========== ejecutable =============
-myutil: main.o repla.o list.o pair.o wc.o utils.o codif.o
-	$(CC) $(CFLAGS) -o myutil main.o repla.o list.o pair.o wc.o utils.o codif.o
+myutil: main.o repla.o list.o pair.o wc.o utils.o codif.o find.o
+	$(CC) $(CFLAGS) -o myutil main.o repla.o list.o pair.o wc.o utils.o codif.o find.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
@@ -60,8 +60,8 @@ codif/testcodif.o: codif/testcodif.c
 # =========== wdt =============
 
 ################################################
-wdt/testwdt: wdt/testwdt.o utils.o
-	$(CC) $(CFLAGS) -o wdt/testwdt wdt/testwdt.o utils.o
+wdt/testwdt: wdt/testwdt.o utils.o find.o
+	$(CC) $(CFLAGS) -o wdt/testwdt wdt/testwdt.o utils.o find.o
 
 wdt/testwdt.o: wdt/testwdt.c
 	$(CC) $(CFLAGS) -o wdt/testwdt.o -c wdt/testwdt.c
@@ -69,6 +69,11 @@ wdt/testwdt.o: wdt/testwdt.c
 
 utils.o: utils.c
 	$(CC) $(CFLAGS) -c utils.c
+
+# =========== find =============
+
+find.o: find.c
+	$(CC) $(CFLAGS) -c find.c
 
 # =========== misc =============
 clean:
