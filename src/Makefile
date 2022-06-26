@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic -g
+CFLAGS = -ansi -Wall -pedantic
 
 all: myutil
 
-myutil: main.o repla.o list.o pair.o wc.o utils.o codif.o find.o
+myutil: repla.o list.o pair.o wc.o utils.o codif.o find.o main.o
 	$(CC) $(CFLAGS) -o myutil main.o repla.o list.o pair.o wc.o utils.o codif.o find.o
 
 main.o: main.c

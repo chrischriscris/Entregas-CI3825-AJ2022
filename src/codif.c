@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <errno.h>
 
 /**
  * Revierte el orden de los caracteres de un archivo.

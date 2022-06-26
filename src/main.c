@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "codif.h"
+#include "wc.h"
 #include "find.h"
 #include "list.h"
 #include "pair.h"
+#include "codif.h"
 #include "repla.h"
 #include "utils.h"
-#include "wc.h"
 
 
 /**
@@ -45,15 +45,18 @@ char *input_string(FILE* fp, int size){
 }
 
 int main(int argc, char **argv) {
+    /* Inicialización del interpretador */
     /*
     char *m;
 
-    // printf("myutil> ");
-    // m = input_string(stdin, 10);
-    // printf("%s\n", m);
+    printf("myutil> ");
+    m = input_string(stdin, 10);
+    printf("%s\n", m);
 
     free(m);
     */
+
+    int c, l;
     char *root;
     char *path;
     char **args;
@@ -90,6 +93,7 @@ int main(int argc, char **argv) {
     */
 
     /* Inicialización de repla */
+    /*
     root = argv[1];
     path = argv[2];
     list = extract_words_from_file(path);
@@ -98,6 +102,13 @@ int main(int argc, char **argv) {
         return 1;
     }
     walk_dir_tree(root, repla, NULL, list, NULL);
+    */
+
+    /* Inicialización de wc */
+    /*
+    root = argv[1];
+    wc(root, &c, &l);
+    */
 
     return 0;
 }
