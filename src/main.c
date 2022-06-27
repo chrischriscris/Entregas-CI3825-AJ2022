@@ -20,53 +20,9 @@ int main(int argc, char **argv) {
 
     free(m);
     */
-
     int c, l;
     char *root;
     char *path;
-    char **args;
-    Node *list;
-
-    /* codif */ 
-    /*
-    root = argv[1];
-    codif(root);
-    */
-
-    /* find */
-    /*
-    root = argv[1];
-    path = argv[2];
-    find(root, path);
-    */
-
-    /* ifind */
-    /*
-    root = argv[1];
-    path = argv[2];
-    ifind(root, path);
-    */
-
-    /* cfind */
-    /*
-    root = argv[1];
-    str1 = argv[2];
-    str2 = argv[3];
-    cfind(root, str1, str2);
-    */
-
-    /* repla */
-    /*
-    root = argv[1];
-    path = argv[2];
-    repla(root, path);
-    */
-
-    /* wc */
-    /*
-    root = argv[1];
-    wc(root, &c, &l);
-    */
 
     return 0;
 }
@@ -104,3 +60,30 @@ char *input_string(FILE* fp, int size) {
     str[len++] = '\0';
     return realloc(str, len);
 }
+
+/*
+Ejemplo de uso de las funciones
+
+root = argv[1];
+codif(root);
+
+root = argv[1];
+path = argv[2];
+find(root, path);
+
+root = argv[1];
+path = argv[2];
+ifind(root, path);
+
+root = argv[1];
+str1 = argv[2];
+str2 = argv[3];
+cfind(root, str1, str2);
+
+root = argv[1];
+path = argv[2];
+repla(root, path);
+
+root = argv[1];
+wc(root, &c, &l);
+*/
