@@ -15,9 +15,26 @@
 
 #define PAIRMATCH "%[^:\n]:%[^\n]\n"
 
+char *rand_filename();
+Node *extract_words_from_file(char *path);
+int replace_words(char *path, void *l);
+
+int repla(char *root, char *path) {
+    int res;
+
+    Node *list = extract_words_from_file(path);
+    if (!list) return -1;
+
+    res = walk_dir_tree(root, repla, NULL, list, NULL);
+
+    List_destroy(list);
+    return res;
+}
+
 /**
  * Genera una string con un nombre de archivo generado aleatoriamente con
- * el formato tmp_<rand_num>.tmp. (Memoria dinámica, liberar)
+ * el formato tmp_<rand_num>.tmp. La memoria asignada para la string debe
+ * ser liberada por el usuario.
  *
  * @return String con el nombre generado.
  */
@@ -37,7 +54,7 @@ char *rand_filename() {
 /**
  * Lee un archivo con el formato indicado y extrae pares de cadenas de
  * caracteres en una lista ordenada en orden descendiente del tamaño de
- * la cadena.
+ * la cadena. La lista de pares debe ser liberada por el usuario.
  * 
  * @param path: Cadena de caracteres con la ruta del archivo a leer.
  * @return Apuntador a la cabeza de una lista enlazada de pares de palabras.
@@ -102,7 +119,7 @@ Node *extract_words_from_file(char *path) {
  * @return 0 si la operación fue exitosa.
  *     -1 en caso de error.
  */
-int repla(char *path, void *l) {
+int replace_words(char *path, void *l) {
     FILE *fp;
     struct stat st;
     char *tmp_filename;

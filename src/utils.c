@@ -7,36 +7,6 @@
 #include "utils.h"
 
 /**
- * Verifica si una ruta es un directorio.
- *
- * @param path: String con la ruta a verificar.
- * @return 1 si es directorio.
- *     0 en caso contrario.
- *     -1 en caso de error.
- */
-int is_directory(char *path) {
-    struct stat st;
-    if (stat(path, &st) != 0) return -1;
-
-    return S_ISDIR(st.st_mode);
-}
-
-/**
- * Verifica si un archivo es regular.
- *
- * @param path: String con la ruta del archivo a verificar.
- * @return 1 si es un archivo regular.
- *     0 en caso contrario.
- *     -1 en caso de error.
- */
-int is_regular_file(char *path) {
-    struct stat st;
-    if (stat(path, &st) != 0) return -1;
-
-    return S_ISREG(st.st_mode);
-}
-
-/**
  * Recorre un arbol de directorios en DFS.
  * 
  * @param root: String con la ruta del directorio raiz a recorrer.
@@ -104,7 +74,7 @@ int walk_dir_tree(char *root, int (*fn1)(char *, void *),
     /* Análogamente, si fn2 no es nula, se llama */
     if (fn2) {
         if (fn2(root, arg2) == -1) {
-            fprintf(stderr, "Hubo un error abriendo navegando por \
+            fprintf(stderr, "Hubo un error navegando por \
                 el directorio %s.", root);
             closedir(dir);
             return -1;
@@ -113,4 +83,34 @@ int walk_dir_tree(char *root, int (*fn1)(char *, void *),
     closedir(dir);
 
     return 0;
+}
+
+/**
+ * Verifica si una ruta es un directorio.
+ *
+ * @param path: String con la ruta a verificar.
+ * @return 1 si es directorio.
+ *     0 en caso contrario.
+ *     -1 en caso de error.
+ */
+int is_directory(char *path) {
+    struct stat st;
+    if (stat(path, &st) != 0) return -1;
+
+    return S_ISDIR(st.st_mode);
+}
+
+/**
+ * Verifica si un archivo es regular.
+ *
+ * @param path: String con la ruta del archivo a verificar.
+ * @return 1 si es un archivo regular.
+ *     0 en caso contrario.
+ *     -1 en caso de error.
+ */
+int is_regular_file(char *path) {
+    struct stat st;
+    if (stat(path, &st) != 0) return -1;
+
+    return S_ISREG(st.st_mode);
 }

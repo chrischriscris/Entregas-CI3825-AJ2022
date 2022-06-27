@@ -1,10 +1,8 @@
-#ifndef __WC_H__
-#define __WC_H__
+#ifndef __REPLA_H__
+#define __REPLA_H__
 
 #include "list.h"
 
-Node *extract_words_from_file(char *path);
-int repla(char *path, void *l);
-char *rand_filename();
+int repla(char *root, char *path);
 
 #endif

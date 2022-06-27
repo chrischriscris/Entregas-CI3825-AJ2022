@@ -6,7 +6,6 @@
 #include "list.h"
 #include "codif.h"
 #include "repla.h"
-#include "utils.h"
 
 
 /**
@@ -61,27 +60,27 @@ int main(int argc, char **argv) {
     char **args;
     Node *list;
 
-    /* Inicialización de codif */
+    /* Inicialización de codif DONE */ 
     /*
     root = argv[1];
     walk_dir_tree(root, codif, NULL, NULL, NULL);
     */
 
-   /* Inicialización de find */
+    /* Inicialización de find DONE */
     /*
     root = argv[1];
     path = argv[2];
     walk_dir_tree(root, find, find, path, path);
     */
 
-    /* Inicialización de ifind */
+    /* Inicialización de ifind DONE */
     /*
     root = argv[1];
     path = argv[2];
     walk_dir_tree(root, ifind, NULL, path, NULL);
     */
 
-    /* Inicialización de cfind */
+    /* Inicialización de cfind DONE */
     /*
     root = argv[1];
     args = malloc(sizeof(char *) * 2);
@@ -101,6 +100,7 @@ int main(int argc, char **argv) {
         return 1;
     }
     walk_dir_tree(root, repla, NULL, list, NULL);
+    List_destroy(list);
     */
 
     /* Inicialización de wc */

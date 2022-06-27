@@ -99,14 +99,11 @@ int List_push(Node **list, Pair *data, int length) {
  */
 void List_destroy(Node *head) {
     Node *cur = head;
-    Node *next;
 
     while (cur) {
-        next = cur->next;
-
         Pair_destroy(cur->data);
         free(cur);
-        cur = next;
+        cur = cur->next;
     }
 }
 

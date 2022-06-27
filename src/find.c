@@ -2,59 +2,89 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "find.h"
+#include "utils.h"
+
+int find_substr(char *str1, void *str2);
+int find_substr_case(char *str1, void *str2);
+int find_substr_inside(char *str, void *word);
+
+int find(char *root, char *str) {
+    return walk_dir_tree(root, find_substr, find_substr, str, str);
+}
+
+int ifind(char *root, char *str) {
+    return walk_dir_tree(root, find_substr_case, find_substr_case, str, str);
+}
+
+int cfind(char *root, char *str, char *word) {
+    char **args = malloc(sizeof(char *) * 2);
+    int res;
+
+    args[0] = str;
+    args[1] = word;
+
+    res = walk_dir_tree(root, find_substr, NULL, args, NULL);
+
+    free(args);
+    return res;
+}
+
 /**
- * Imprime la ruta si contiene a str.
+ * Compara dos strings e imprime la primera si la segunda
+ * es NULL o si la segunda es una subcadena de la primera.
  * 
- * @param path: String con una ruta.
- * @param str: String con una subcadena a buscar.
+ * @param str1: Primera string a comparar.
+ * @param str2: Segunda cadena a comparar.
  * @return 1 si contiene a str.
  *     0 en caso contrario.
  */
-int find(char *path, void *str) {
-    char *str_cmp = !str ? path : str;
-    if (strstr(path, str_cmp) != NULL) {
-        printf("%s\n", path);
+int find_substr(char *str1, void *str2) {
+    char *str_cmp = str2;
+    if (!str2 || strstr(str1, str_cmp) != NULL) {
+        printf("%s\n", str1);
         return 1;
     }
     return 0;
 }
 
 /**
- * Imprime la ruta si contiene a str, sin sesibilidad a
- * mayúsculas/minúsculas.
+ * Compara dos strings e imprime la primera si la segunda
+ * es NULL o si la segunda es una subcadena de la primera,
+ * sin sensibilidad a mayúsculas/minúsculas.
  * 
- * @param path: String con una ruta.
- * @param str: String con una subcadena a buscar.
+ * @param str1: Primera string a comparar.
+ * @param str2: Segunda cadena a comparar.
  * @return 1 si contiene a str.
  *     0 en caso contrario.
  */
-int ifind(char *path, void *str) {
-    char *str_cmp = !str ? path : str;
-    if (strcasestr(path, str_cmp) != NULL) {
-        printf("%s\n", path);
+int find_substr_case(char *str1, void *str2) {
+    char *str_cmp = str2;
+    if (!str2 || strcasestr(str1, str_cmp) != NULL) {
+        printf("%s\n", str1);
         return 1;
     }
     return 0;
 }
-
 
 /**
  * Imprime la ruta de un archivo regular si esta contiene a str
  * y además el archivo contiene a word dentro.
- * 
+ *
  * @param path: String con una ruta.
  * @param args: Arreglo {str, word}.
  * @return 1 si la ruta contiene str y tiene a word en su contenido.
  *     0 en caso contrario.
  *     -1 em casp de algún eror.
  */
-int cfind(char *path, void *args) {
+int find_substr_inside(char *path, void *args) {
     FILE *fp;
     char cur_char;
+    char **args_cast = args;
 
     /* Obtiene las palabras del argumento */
-    char *str = ((char **) args)[0];
-    char *word = ((char **) args)[1];
+    char *str = args_cast[0];
+    char *word = args_cast[1];
     char *cur_word = word;
 
     /* Si el nombre del archivo no contiene str, retorna */
