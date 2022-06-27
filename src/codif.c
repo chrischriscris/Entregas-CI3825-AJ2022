@@ -2,10 +2,10 @@
 #include "codif.h"
 #include "utils.h"
 
-int reverse_file(char *path);
+int reverse_file_content(char *path, void *_);
 
 int codif(char *root) {
-    return walk_dir_tree(root, reverse_file, NULL, NULL, NULL);
+    return walk_dir_tree(root, reverse_file_content, NULL, NULL, NULL);
 }
 
 /**
@@ -15,7 +15,7 @@ int codif(char *root) {
  * @return 0 en caso de exito.
  *    -1 en caso de error.
  */
-int reverse_file(char *path) {
+int reverse_file_content(char *path, void *_) {
     int lpos = 0;
     int rpos;
     FILE *fp1 = fopen(path, "r+");

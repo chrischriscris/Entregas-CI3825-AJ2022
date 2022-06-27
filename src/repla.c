@@ -12,6 +12,7 @@
 #include "pair.h"
 #include "list.h"
 #include "repla.h"
+#include "utils.h"
 
 #define PAIRMATCH "%[^:\n]:%[^\n]\n"
 
@@ -25,7 +26,7 @@ int repla(char *root, char *path) {
     Node *list = extract_words_from_file(path);
     if (!list) return -1;
 
-    res = walk_dir_tree(root, repla, NULL, list, NULL);
+    res = walk_dir_tree(root, replace_words, NULL, list, NULL);
 
     List_destroy(list);
     return res;
