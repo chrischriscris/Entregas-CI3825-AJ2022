@@ -72,13 +72,16 @@ int walk_dir_tree(char *root, int (*fn1)(char *, void *),
             sprintf(full_path, "%s/%s", root, d_name);
 
             is_dir = is_directory(full_path);
-            if (is_dir == -1) return -1;
+            if (is_dir == -1) {
+                free(full_path);
+                continue;
+            }
 
             if (is_dir) {
                 /* Si es directorio, se explora recursivamente */
                 if (walk_dir_tree(full_path, fn1, fn2, arg1, arg2) == -1) {
                     free(full_path);
-                    return -1;
+                    continue;
                 }
             } else {
                 /* De lo contrario, se hace una operación sobre el archivo,
@@ -95,18 +98,19 @@ int walk_dir_tree(char *root, int (*fn1)(char *, void *),
                     }
                 }
             }
-            /* Análogamente, si fn2 no es nula, se llama */
-            if (fn2) {
-                if (fn2(full_path, arg2) == -1) {
-                    fprintf(stderr, "Hubo un error abriendo navegando por \
-                        el directorio %s.", full_path);
-                    free(full_path);
-                    continue;
-                }
-            }
             free(full_path);
         }
     }
+    /* Análogamente, si fn2 no es nula, se llama */
+    if (fn2) {
+        if (fn2(root, arg2) == -1) {
+            fprintf(stderr, "Hubo un error abriendo navegando por \
+                el directorio %s.", root);
+            closedir(dir);
+            return -1;
+        }
+    }
+    closedir(dir);
 
     return 0;
 }

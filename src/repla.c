@@ -62,13 +62,25 @@ Node *extract_words_from_file(char *path) {
         char *word2 = malloc(strlen(p2) + 1);
         Pair *p;
 
-        if (!word1 || !word2) return NULL;
+        if (!word1 || !word2) {
+            fclose(fp);
+            return NULL;
+        }
         
         /* Aquí se guarda el par y se enlaza a la lista. */
         p = Pair_new(strcpy(word1, p1), strcpy(word2, p2));
-        if (!p) return NULL;
+        if (!p) {
+            free(word1);
+            free(word2);
+            fclose(fp);
+            return NULL;
+        }
 
-        if (List_push(&l, p, p1_length) == -1) return NULL;
+        if (List_push(&l, p, p1_length) == -1) {
+            List_destroy(l);
+            fclose(fp);
+            return NULL;
+        }
     }
     fclose(fp);
 
@@ -106,7 +118,10 @@ int repla(char *path, void *l) {
     /* Crea y abre archivo temporal para hacer la sustitución */
     tmp_filename = rand_filename();
     tmp_fp = fopen(tmp_filename, "w");
-    if (!tmp_fp) return -1;
+    if (!tmp_fp) {
+        fclose(fp);
+        return -1;
+    }
 
     /* Por cada letra del archivo a leer */
     while ((cur_char = fgetc(fp)) != EOF) {
@@ -147,6 +162,7 @@ int repla(char *path, void *l) {
     los mismos permisos que el original */
     if (rename(tmp_filename, path) == -1) {
         remove(tmp_filename);
+        free(tmp_filename);
         return -1; 
     }
 

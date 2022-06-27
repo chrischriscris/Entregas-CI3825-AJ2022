@@ -68,10 +68,10 @@ int main(int argc, char **argv) {
     */
 
    /* Inicialización de find */
-   /*
+    /*
     root = argv[1];
     path = argv[2];
-    walk_dir_tree(root, find, NULL, path, NULL);
+    walk_dir_tree(root, find, find, path, path);
     */
 
     /* Inicialización de ifind */

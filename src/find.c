@@ -72,6 +72,7 @@ int cfind(char *path, void *args) {
         /* Si la palabra coincide, imprime y retorna */
         if (*cur_word == '\0') {
             printf("%s\n", path);
+            fclose(fp);
             return 1;
         }
 

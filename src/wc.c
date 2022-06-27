@@ -41,7 +41,10 @@ int wc(char *path, int *chars, int *lines) {
             sprintf(full_path, "%s/%s", path, d_name);
 
             is_dir = is_directory(full_path);
-            if (is_dir == -1) return -1;
+            if (is_dir == -1) {
+                free(full_path);
+                continue;
+            }
 
             if (is_dir) {
                 /* Si es directorio, se explora recursivamente */
@@ -70,6 +73,7 @@ int wc(char *path, int *chars, int *lines) {
         }
     }
     printf("El directorio %s: %d líneas y %d caracteres\n", path, *lines, *chars);
+    closedir(dir);
 
     return 0;
 }
