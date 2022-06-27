@@ -13,15 +13,15 @@ int count_chars_and_lines(char *path, int *chars, int *lines);
  * Recorre un arbol de directorios en DFS, contando las líneas y
  * caracteres.
  * 
- * @param path: String con la ruta del directorio raiz a recorrer.
+ * @param root: String con la ruta del directorio raiz a recorrer.
  * @return 0 en caso de exito.
  *     -1 en caso de error.
  */
-int wc(char *path, int *chars, int *lines) {
+int wc(char *root, int *chars, int *lines) {
     struct dirent *entry;
 
     /* Abre el directorio */
-    DIR *dir = opendir(path);
+    DIR *dir = opendir(root);
     if (!dir) return -1;
 
     *chars = 0;
@@ -35,12 +35,12 @@ int wc(char *path, int *chars, int *lines) {
         if (strcmp(d_name, ".") == 0 || strcmp(d_name, "..") == 0) {
             continue;
         } else {
-            char *full_path = malloc(strlen(path) + strlen(d_name) + 2);
+            char *full_path = malloc(strlen(root) + strlen(d_name) + 2);
             int is_dir;
             int n, m;
 
             /* Construye la ruta completa */
-            sprintf(full_path, "%s/%s", path, d_name);
+            sprintf(full_path, "%s/%s", root, d_name);
 
             is_dir = is_directory(full_path);
             if (is_dir == -1) {
@@ -74,7 +74,7 @@ int wc(char *path, int *chars, int *lines) {
             free(full_path);
         }
     }
-    printf("El directorio %s: %d líneas y %d caracteres\n", path, *lines, *chars);
+    printf("El directorio %s: %d líneas y %d caracteres\n", root, *lines, *chars);
     closedir(dir);
 
     return 0;

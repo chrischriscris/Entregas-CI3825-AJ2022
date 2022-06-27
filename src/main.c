@@ -28,47 +28,41 @@ int main(int argc, char **argv) {
     Node *list;
 
     /* codif */ 
+    /*
     root = argv[1];
     codif(root);
+    */
 
-    /* Inicialización de find DONE */
+    /* find */
     /*
     root = argv[1];
     path = argv[2];
-    walk_dir_tree(root, find, find, path, path);
+    find(root, path);
     */
 
-    /* Inicialización de ifind DONE */
+    /* ifind */
     /*
     root = argv[1];
     path = argv[2];
-    walk_dir_tree(root, ifind, NULL, path, NULL);
+    ifind(root, path);
     */
 
-    /* Inicialización de cfind DONE */
+    /* cfind */
     /*
     root = argv[1];
-    args = malloc(sizeof(char *) * 2);
-    args[0] = argv[2];
-    args[1] = argv[3];
-    walk_dir_tree(root, cfind, NULL, args, NULL);
-    free(args);
+    str1 = argv[2];
+    str2 = argv[3];
+    cfind(root, str1, str2);
     */
 
-    /* Inicialización de repla */
+    /* repla */
     /*
     root = argv[1];
     path = argv[2];
-    list = extract_words_from_file(path);
-    if (!list) {
-        printf("Error al leer el archivo.\n");
-        return 1;
-    }
-    walk_dir_tree(root, repla, NULL, list, NULL);
-    List_destroy(list);
+    repla(root, path);
     */
 
-    /* Inicialización de wc */
+    /* wc */
     /*
     root = argv[1];
     wc(root, &c, &l);
