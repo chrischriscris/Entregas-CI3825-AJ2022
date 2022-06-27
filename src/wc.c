@@ -7,6 +7,8 @@
 #include "wc.h"
 #include "utils.h"
 
+int count_chars_and_lines(char *path, int *chars, int *lines);
+
 /**
  * Recorre un arbol de directorios en DFS, contando las líneas y
  * caracteres.
