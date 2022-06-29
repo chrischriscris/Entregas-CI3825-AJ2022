@@ -1,7 +1,8 @@
 /**
- * 
+ * Implementación de repla y funciones de ayuda para su funcionamiento.
+ *
  * Autor: Christopher Gómez.
- * Fecha: 04-06-2022.
+ * Fecha: 29-06-2022.
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +21,18 @@ char *rand_filename();
 Node *extract_words_from_file(char *path);
 int replace_words(char *path, void *l);
 
+/**
+ * Implementación de la función de interpretador repla.
+ * 
+ * Toma el archivo con pares ubicado en path y aplica las sustituciones
+ * en los archivos regulares que se encuentren en el árbol.
+ * 
+ * @param root: Directorio raíz del árbol de archivos.
+ * @param path: Ruta al archivo con pares de palabras. Se asume que está
+ *     fuera del árbol de archivos de root.
+ * @return 0 si la operación fue exitosa.
+ *     -1 si ocurrió un error.
+ */
 int repla(char *root, char *path) {
     int res;
 

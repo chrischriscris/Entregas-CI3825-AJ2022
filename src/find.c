@@ -1,3 +1,10 @@
+/**
+ * Implementación de find, ifind y cfind y funciones de ayuda para su
+ * funcionamiento.
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,14 +17,49 @@ int find_substr(char *str1, void *str2);
 int find_substr_case(char *str1, void *str2);
 int find_substr_inside(char *str, void *word);
 
+/**
+ * Implementación de la función de interpretador find.
+ *
+ * Imprime los nombres de los archivos que contienen a str como
+ * subcadena. Es case sensitive.
+ * 
+ * @param root: Directorio raíz del árbol de archivos.
+ * @param str: String con la subcadena a buscar. Puede ser NULL.
+ * @return 0 si la operación fue exitosa.
+ *     -1 si ocurrió un error.
+ */
 int find(char *root, char *str) {
     return walk_dir_tree(root, find_substr, find_substr, str, str);
 }
 
+/**
+ * Implementación de la función de interpretador ifind.
+ *
+ * Imprime los nombres de los archivos que contienen a str como
+ * subcadena. No es case sensitive.
+ * 
+ * @param root: Directorio raíz del árbol de archivos.
+ * @param str: String con la subcadena a buscar. Puede ser NULL.
+ * @return 0 si la operación fue exitosa.
+ *     -1 si ocurrió un error.
+ */
 int ifind(char *root, char *str) {
     return walk_dir_tree(root, find_substr_case, find_substr_case, str, str);
 }
 
+/**
+ * Implementación de la función de interpretador cfind.
+ *
+ * Imprime los nombres de los archivos que contienen a str como
+ * subcadena. Y adicionalmente su contenido tenga la cadena word.
+ * Es case sensitive
+ * 
+ * @param root: Directorio raíz del árbol de archivos.
+ * @param str: String con la subcadena a buscar.
+ * @param word: String con la subcadena a buscar dentro de los archivos.
+ * @return 0 si la operación fue exitosa.
+ *     -1 si ocurrió un error.
+ */
 int cfind(char *root, char *str, char *word) {
     char **args = malloc(sizeof(char *) * 2);
     int res;

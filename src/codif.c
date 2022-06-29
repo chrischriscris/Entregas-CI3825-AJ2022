@@ -1,9 +1,24 @@
+/**
+ * Implementación de codif y funciones de ayuda para su funcionamiento.
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
 #include <stdio.h>
 #include "codif.h"
 #include "utils.h"
 
 int reverse_file_content(char *path, void *_);
 
+/**
+ * Implementación de la función de interpretador codif.
+ * 
+ * Por cada archivo regular, invierte su contenido. No imprime nada.
+ * 
+ * @param root: Directorio raíz del árbol de archivos.
+ * @return 0 si la operación fue exitosa.
+ *     -1 si ocurrió un error.
+ */
 int codif(char *root) {
     return walk_dir_tree(root, reverse_file_content, NULL, NULL, NULL);
 }

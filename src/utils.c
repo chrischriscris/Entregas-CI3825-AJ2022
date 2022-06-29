@@ -1,3 +1,9 @@
+/**
+ * Implementación de funciones de utilidad para myutil.
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <dirent.h>
@@ -13,7 +19,7 @@
  * @param fn1: Funcion a llamar por cada archivo regular en el árbol,
  *     de directorios, que retorna un entero positivo si fue exitosa
  *     y -1 en caso de error. Si es NULL no se llama.
- * @param fn2: Análoga a la anterior, se llama por cada archivo del árbol.
+ * @param fn2: Análoga a la anterior, se llama por cada directorio del árbol.
  * @param arg1: Apuntador al argumento que recibirá fn1.
  * @param arg2: Apuntador al argumento que recibirá fn2.
  * @return 0 en caso de exito.

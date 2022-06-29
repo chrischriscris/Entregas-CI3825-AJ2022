@@ -1,3 +1,9 @@
+/**
+ * Implementación de wc y funciones de ayuda para su funcionamiento.
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,10 +16,15 @@
 int count_chars_and_lines(char *path, int *chars, int *lines);
 
 /**
- * Recorre un arbol de directorios en DFS, contando las líneas y
- * caracteres.
+ * Implementación de la función de interpretador wc.
+ * 
+ * Por directorio dentro del árbol, imprime el total de líneas y caracteres
+ * de los archivos regulares que contiene en forma recursiva, incluyendo
+ * la raíz del árbol.
  * 
  * @param root: String con la ruta del directorio raiz a recorrer.
+ * @param chars (out): Emtero con el número de caracteres de root.
+ * @param lines (out): Emtero con el número de líneas de root.
  * @return 0 en caso de exito.
  *     -1 en caso de error.
  */
