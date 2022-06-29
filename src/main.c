@@ -127,6 +127,7 @@ int main(int argc, char **argv) {
             int n = 0;
 
             atoi(n_read);
+            /* verify_exec(roll(root, n), "roll"); */
         }
 
         else
