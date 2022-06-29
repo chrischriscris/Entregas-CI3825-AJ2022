@@ -40,7 +40,7 @@ int repla(char *root, char *path) {
  * @return String con el nombre generado.
  */
 char *rand_filename() {
-    char *filename = malloc(16);
+    char *filename = malloc(sizeof(char) * 16);
     int r;
 
     /* Genera un número aleatorio del 0 al 9999999 */
@@ -76,8 +76,8 @@ Node *extract_words_from_file(char *path) {
     luego lee hasta encontrar un salto de línea. */
     while (fscanf(fp, PAIRMATCH, p1, p2) != EOF) {
         int p1_length = strlen(p1);
-        char *word1 = malloc(p1_length + 1);
-        char *word2 = malloc(strlen(p2) + 1);
+        char *word1 = malloc(sizeof(char) * (p1_length + 1));
+        char *word2 = malloc(sizeof(char) * (strlen(p2) + 1));
         Pair *p;
 
         if (!word1 || !word2) {

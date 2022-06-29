@@ -35,7 +35,8 @@ int walk_dir_tree(char *root, int (*fn1)(char *, void *),
         if (strcmp(d_name, ".") == 0 || strcmp(d_name, "..") == 0) {
             continue;
         } else {
-            char *full_path = malloc(strlen(root) + strlen(d_name) + 2);
+            char *full_path = malloc(sizeof(char) *
+                (strlen(root) + strlen(d_name) + 2));
             int is_dir;
 
             /* Construye la ruta completa */
