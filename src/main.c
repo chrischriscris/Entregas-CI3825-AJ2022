@@ -181,8 +181,8 @@ char *readline(FILE* fp, int size) {
 }
 
 void verify_exec(int n, char *command) {
-    if (n == 1)
-        fprintf(stderr, "Ha habido un error ejecutando %s", command);
+    if (n == -1)
+        fprintf(stderr, "Ha habido un error ejecutando %s\n", command);
 }
 
 /*
