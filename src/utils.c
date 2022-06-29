@@ -121,3 +121,44 @@ int is_regular_file(char *path) {
 
     return S_ISREG(st.st_mode);
 }
+
+/**
+ * Lee una string de un apuntador a FILE y asigna memoria dinámicamente
+ * para leer todo su contenido. Comienza con tamaño size y aumenta en 16
+ * en 16 la longitud.
+ *
+ * @param fp: Apuntador a FILE.
+ * @param size: Tamaño inicial esperado de la string.
+ * @return Apuntador a string, debe ser liberada por el usuario.
+ */
+char *readline(FILE* fp, int size) {
+    char *str;
+    char c;
+    int len = 0;
+
+    /* Se asigna size cantidad de memoria */
+    str = malloc(sizeof(char) * size);
+    if (!str) return NULL;
+
+    while ((c=fgetc(fp)) != EOF && c != '\n'){
+        str[len++] = c;
+
+        if (len == size + 1) {
+            size += 16;
+            str = realloc(str, sizeof(char) * size);
+            if (!str) {
+                free(str);
+                return NULL;
+            }
+        }
+    }
+
+    str[len++] = '\0';
+    str = realloc(str, sizeof(char) * len);
+
+    if (!str) {
+        free(str);
+        return NULL;
+    }
+    return str;
+}

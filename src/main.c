@@ -1,15 +1,31 @@
+/**
+ * Emtry-point del interpretador myutil. Soporta los comandos:
+ * 
+ * * wc:
+ * * find:
+ * * ifind:
+ * * cfind:
+ * * codif:
+ * * repla:
+ * * roll:
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <ctype.h>
 
 #include "wc.h"
 #include "find.h"
 #include "list.h"
 #include "codif.h"
 #include "repla.h"
+#include "utils.h"
 
-char *readline(FILE* fp, int size);
+int is_numeric(char *str);
 void verify_exec(int n, char *command);
 
 int main(int argc, char **argv) {
@@ -123,11 +139,24 @@ int main(int argc, char **argv) {
 
         else if (!strcmp(command, "roll"))
         {
-            char *n_read = strtok(NULL, " ");
-            int n = 0;
+            char *n_str = strtok(NULL, " ");
+            int n;
 
-            atoi(n_read);
-            /* verify_exec(roll(root, n), "roll"); */
+            if (strtok(NULL, " ")) {
+                fprintf(stderr, "Uso: roll [<n>]");
+                free(input);
+                continue;
+            }
+
+            if (!is_numeric(n_str)) {
+                fprintf(stderr, "El comando roll requiere un número entero \
+                    como argumento");
+                free(input);
+                continue;
+            }
+
+            n = atoi(n_str);
+            /* verify_exec(roll(root, n), "roll"); */   
         }
 
         else
@@ -140,50 +169,24 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-/**
- * Lee una string de un apuntador a FILE y asigna memoria dinámicamente
- * para leer todo su contenido. Comienza con tamaño size y aumenta en 16
- * en 16 la longitud.
- * 
- * @param fp: Apuntador a FILE.
- * @param size: Tamaño inicial esperado de la string.
- * @return Apuntador a string, debe ser liberada por el usuario.
- */
-char *readline(FILE* fp, int size) {
-    char *str;
-    char c;
-    int len = 0;
-
-    /* Se asigna size cantidad de memoria */
-    str = malloc(sizeof(char) * size);
-    if (!str) return NULL;
-
-    while ((c=fgetc(fp)) != EOF && c != '\n'){
-        str[len++] = c;
-
-        if (len == size + 1) {
-            size += 16;
-            str = realloc(str, sizeof(char) * size);
-            if (!str) {
-                free(str);
-                return NULL;
-            }
-        }
-    }
-
-    str[len++] = '\0';
-    str = realloc(str, sizeof(char) * len);
-
-    if (!str) {
-        free(str);
-        return NULL;
-    }
-    return str;
-}
-
 void verify_exec(int n, char *command) {
     if (n == -1)
         fprintf(stderr, "Ha habido un error ejecutando %s\n", command);
+}
+
+/**
+ * Verifica si una string dada es numérica.
+ * 
+ * @param str: String a verificar.
+ * @return 1 
+ */
+int is_numeric(char *str) {
+    int i;
+    for (i = 0; i < strlen(str); i++) {
+        if (!isdigit(str[i]))
+            return 0;
+    }
+    return 1;
 }
 
 /*
