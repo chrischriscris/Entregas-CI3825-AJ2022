@@ -24,6 +24,7 @@
 #include "codif.h"
 #include "repla.h"
 #include "utils.h"
+#include "roll.h"
 
 int is_numeric(char *str);
 void verify_exec(int n, char *command);
@@ -59,6 +60,10 @@ int main(int argc, char **argv) {
             fprintf(stderr, "Error: hubo un error leyendo la línea.\n");
 
         command = strtok(input, " ");
+        if (!command) {
+            free(input);
+            continue;
+        }
 
         if (!strcmp(command, "wc"))
         {
@@ -143,20 +148,20 @@ int main(int argc, char **argv) {
             int n;
 
             if (strtok(NULL, " ")) {
-                fprintf(stderr, "Uso: roll [<n>]");
+                fprintf(stderr, "Uso: roll [<n>]\n");
                 free(input);
                 continue;
             }
 
-            if (!is_numeric(n_str)) {
+            if (n_str && !is_numeric(n_str)) {
                 fprintf(stderr, "El comando roll requiere un número entero \
                     como argumento");
                 free(input);
                 continue;
             }
 
-            n = atoi(n_str);
-            /* verify_exec(roll(root, n), "roll"); */   
+            n = n_str ? atoi(n_str) : 0;
+            verify_exec(roll(root, n), "roll");
         }
 
         else

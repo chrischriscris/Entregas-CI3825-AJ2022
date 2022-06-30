@@ -33,32 +33,32 @@ int codif(char *root) {
 int reverse_file_content(char *path, void *_) {
     int lpos = 0;
     int rpos;
-    FILE *fp1 = fopen(path, "r+");
-    if (!fp1) return -1;
+    FILE *fp = fopen(path, "r+");
+    if (!fp) return -1;
 
     /* Se obtiene de esta forma el tamaño del archivo */
-    fseek(fp1, -1,  SEEK_END);
-    rpos = ftell(fp1);
+    fseek(fp, -1,  SEEK_END);
+    rpos = ftell(fp);
 
-    rewind(fp1);
+    rewind(fp);
     while (lpos < rpos) {
         char c1, c2;
 
         /* Guarda los caracteres de ambos extremos */
-        c1  = fgetc(fp1);
-        fseek(fp1, rpos, SEEK_SET);
-        c2 = fgetc(fp1);
+        c1  = fgetc(fp);
+        fseek(fp, rpos, SEEK_SET);
+        c2 = fgetc(fp);
         
         /* Se reemplaza el caracter de la derecha por el de la izquierda */
-        fseek(fp1, rpos--, SEEK_SET);
-        fputc(c1, fp1);
+        fseek(fp, rpos--, SEEK_SET);
+        fputc(c1, fp);
 
         /* Se reemplaza el caracter de la izquierda por el de la derecha */
-        fseek(fp1, lpos, SEEK_SET);
-        fputc(c2, fp1);
+        fseek(fp, lpos, SEEK_SET);
+        fputc(c2, fp);
         lpos++;
     }
-    fclose(fp1);
+    fclose(fp);
 
     return 0;
 }

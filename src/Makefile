@@ -3,8 +3,8 @@ CFLAGS = -ansi -Wall -pedantic -g
 
 all: myutil
 
-myutil: repla.o list.o pair.o wc.o utils.o codif.o find.o main.o
-	$(CC) $(CFLAGS) -o myutil main.o repla.o list.o pair.o wc.o utils.o codif.o find.o
+myutil: repla.o list.o pair.o wc.o utils.o codif.o find.o main.o roll.o
+	$(CC) $(CFLAGS) -o myutil main.o repla.o list.o pair.o wc.o utils.o codif.o find.o roll.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
@@ -29,6 +29,9 @@ find.o: find.c
 
 utils.o: utils.c
 	$(CC) $(CFLAGS) -c utils.c
+
+roll.o: roll.c
+	$(CC) $(CFLAGS) -c roll.c
 
 clean:
 	rm *.o myutil
