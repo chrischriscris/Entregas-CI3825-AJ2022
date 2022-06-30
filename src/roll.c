@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "utils.h"
-#define BUFSIZE 4096
 
 int rotate_file_content(char *path, void *m);
 
@@ -18,8 +17,7 @@ int roll(char *root, int n) {
  */
 int rotate_file_content(char *path, void *m) {
     int n = *(int *) m;
-    int n_unread;
-    int size;
+    int n_unread, size;
     char *buf1, *buf2;
     FILE *fp = fopen(path, "r+");
     if (!fp) return -1;
@@ -29,9 +27,10 @@ int rotate_file_content(char *path, void *m) {
     size = ftell(fp);
     n_unread = size;
 
-    buf1 = malloc(sizeof(char) * BUFSIZE);
+    buf1 = malloc(sizeof(char) * BUFSIZ);
     buf2 = malloc(sizeof(char) * n);
     if (!buf1 || !buf2) {
+        fclose(fp);
         free(buf1);
         free(buf2);
         return -1;
@@ -41,17 +40,16 @@ int rotate_file_content(char *path, void *m) {
     if (n < 0) {
 
     } else if (n > 0) {
-        /* Se leen n caracteres al final */
-
+        /* Se guardan los n caracteres al final */
         fseek(fp, size - n, SEEK_SET);
         n_unread -= fread(buf2, 1, n, fp);
 
         /* Va rodando bloques hacia atrás */
-        while (n_unread >= BUFSIZE) {
-            fseek(fp, n_unread - BUFSIZE, SEEK_SET);
-            fread(buf1, BUFSIZE, 1, fp);
-            fseek(fp, BUFSIZE + n, SEEK_CUR);
-            n_unread -= fwrite(buf1, BUFSIZE, 1, fp);
+        while (n_unread >= BUFSIZ) {
+            fseek(fp, n_unread - BUFSIZ, SEEK_SET);
+            fread(buf1, 1, BUFSIZ, fp);
+            fseek(fp, n - BUFSIZ, SEEK_CUR);
+            n_unread -= fwrite(buf1, 1, BUFSIZ, fp);
         }
 
         /* Escribe el bloque de tamaño menor al buffer */
