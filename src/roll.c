@@ -16,17 +16,17 @@ int roll(char *root, int n) {
  *    -1 en caso de error.
  */
 int rotate_file_content(char *path, void *m) {
-    int n = *(int *) m;
-    int n_unread, size;
+    int n = *(int *) m, n_unread, size;
     char *buf1, *buf2;
     FILE *fp = fopen(path, "r+");
     if (!fp) return -1;
 
-    /* Se obtiene de esta forma el tamaño del archivo */
+    /* Se obtiene el tamaño del archivo */
     fseek(fp, 0,  SEEK_END);
     size = ftell(fp);
     n_unread = size;
 
+    /* Asigna memoria para buffers dinámicos */
     buf1 = malloc(sizeof(char) * BUFSIZ);
     buf2 = malloc(sizeof(char) * n);
     if (!buf1 || !buf2) {
@@ -63,6 +63,7 @@ int rotate_file_content(char *path, void *m) {
         fwrite(buf2, 1, n, fp);
     }
 
+    printf("n_unread = %d\n", n_unread);
     free(buf1);
     free(buf2);
 
