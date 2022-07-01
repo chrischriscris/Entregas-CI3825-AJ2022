@@ -63,7 +63,6 @@ int rotate_file_content(char *path, void *m) {
         fwrite(buf2, 1, n, fp);
     }
 
-    printf("n_unread = %d\n", n_unread);
     free(buf1);
     free(buf2);
 
