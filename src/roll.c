@@ -62,7 +62,6 @@ int rotate_file_content(char *path, void *m) {
         rewind(fp);
         fwrite(buf2, 1, n, fp);
     }
-
     free(buf1);
     free(buf2);
 

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic -ggdb3
+CFLAGS = -ansi -Wall -pedantic
 
 all: myutil
 

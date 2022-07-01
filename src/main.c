@@ -193,30 +193,3 @@ int is_numeric(char *str) {
     }
     return 1;
 }
-
-/*
-Ejemplo de uso de las funciones
-
-root = argv[1];
-codif(root); ------------------------------
-
-root = argv[1];
-path = argv[2];
-find(root, path); --------------------------
-
-root = argv[1];
-path = argv[2];
-ifind(root, path); -------------------------
-
-root = argv[1];
-str1 = argv[2];
-str2 = argv[3];
-cfind(root, str1, str2); -------------------
-
-root = argv[1];
-path = argv[2];
-repla(root, path); -------------------------
-
-root = argv[1];
-wc(root, &c, &l); --------------------------
-*/
