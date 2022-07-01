@@ -23,8 +23,8 @@ int count_chars_and_lines(char *path, int *chars, int *lines);
  * la raíz del árbol.
  * 
  * @param root: String con la ruta del directorio raiz a recorrer.
- * @param chars (out): Emtero con el número de caracteres de root.
- * @param lines (out): Emtero con el número de líneas de root.
+ * @param chars (out): Entero con el número de caracteres de root.
+ * @param lines (out): Entero con el número de líneas de root.
  * @return 0 en caso de exito.
  *     -1 en caso de error.
  */
@@ -41,7 +41,7 @@ int wc(char *root, int *chars, int *lines) {
     while ((entry = readdir(dir))) {
         char *d_name = entry->d_name;
         
-        /* Verifica que no sean '.' o '..' para no caer em un ciclo
+        /* Verifica que no sean '.' o '..' para no caer en un ciclo
         infinito */
         if (strcmp(d_name, ".") == 0 || strcmp(d_name, "..") == 0) {
             continue;
