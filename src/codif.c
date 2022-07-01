@@ -33,14 +33,13 @@ int codif(char *root) {
  *    -1 en caso de error.
  */
 int reverse_file_content(char *path, void *_) {
-    int n_half_unread, half_size, parity;
+    int n_half_unread, half_size;
     char *buf1, *buf2;
     FILE *fp = fopen(path, "r+");
     if (!fp) return -1;
 
     /* Se obtiene el tamaño del archivo */
     fseek(fp, 0,  SEEK_END);
-    parity = ftell(fp) % 2;
     half_size = ftell(fp) / 2;
     n_half_unread = half_size;
 
@@ -54,44 +53,28 @@ int reverse_file_content(char *path, void *_) {
         return -1;
     }
 
-    while (n_half_unread >= BUFSIZ) {
+    while (n_half_unread) {
         int m = half_size - n_half_unread;
+        int bytes_to_read = n_half_unread < BUFSIZ ? n_half_unread : BUFSIZ;
 
         /* Lee bloques de la izquierda y derecha */
         fseek(fp, m, SEEK_SET);
-        fread(buf1, 1, BUFSIZ, fp);
+        fread(buf1, 1, bytes_to_read, fp);
 
-        fseek(fp, -m - BUFSIZ , SEEK_END);
-        fread(buf2, 1, BUFSIZ, fp);
+        fseek(fp, -m - bytes_to_read , SEEK_END);
+        fread(buf2, 1, bytes_to_read, fp);
 
         /* Revierte los bloques en memoria principal */
-        reverse_array(buf1, BUFSIZ);
-        reverse_array(buf2, BUFSIZ);
+        reverse_array(buf1, bytes_to_read);
+        reverse_array(buf2, bytes_to_read);
 
         /* Escribe el bloque de la derecha a la izquierda y viceversa*/
         fseek(fp, m, SEEK_SET);
-        fwrite(buf2, 1, BUFSIZ, fp);
+        fwrite(buf2, 1, bytes_to_read, fp);
 
-        fseek(fp, -m - BUFSIZ , SEEK_END);
-        n_half_unread -= fwrite(buf1, 1, BUFSIZ, fp);
+        fseek(fp, -m - bytes_to_read , SEEK_END);
+        n_half_unread -= fwrite(buf1, 1, bytes_to_read, fp);
     }
-
-    /* Revierte y escribe los últimos bloques de tamaño menor al buffer */
-    fseek(fp, half_size - n_half_unread, SEEK_SET);
-    fread(buf1, 1, n_half_unread, fp);
-
-    /* Se mueve 1 si el tamaño del archivo era impar */
-    fseek(fp, parity, SEEK_CUR);
-    fread(buf2, 1, n_half_unread, fp);
-
-    reverse_array(buf1, n_half_unread);
-    reverse_array(buf2, n_half_unread);
-
-    fseek(fp, half_size - n_half_unread, SEEK_SET);
-    fwrite(buf2, 1, n_half_unread, fp);
-
-    fseek(fp, parity, SEEK_CUR);
-    n_half_unread -= fwrite(buf1, 1, n_half_unread, fp);
 
     free(buf1);
     free(buf2);
