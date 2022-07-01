@@ -54,26 +54,30 @@ int reverse_file_content(char *path, void *_) {
     }
 
     while (n_half_unread) {
-        int m = half_size - n_half_unread;
-        int bytes_to_read = n_half_unread < BUFSIZ ? n_half_unread : BUFSIZ;
+        int i, m = half_size - n_half_unread;
+        int n_bytes = n_half_unread < BUFSIZ ? n_half_unread : BUFSIZ;
 
         /* Lee bloques de la izquierda y derecha */
         fseek(fp, m, SEEK_SET);
-        fread(buf1, 1, bytes_to_read, fp);
+        fread(buf1, 1, n_bytes, fp);
 
-        fseek(fp, -m - bytes_to_read , SEEK_END);
-        fread(buf2, 1, bytes_to_read, fp);
+        fseek(fp, -m - n_bytes , SEEK_END);
+        fread(buf2, 1, n_bytes, fp);
 
-        /* Revierte los bloques en memoria principal */
-        reverse_array(buf1, bytes_to_read);
-        reverse_array(buf2, bytes_to_read);
+        /* Intercambia los bloques en orden inverso */
+        for (i = 0 ; i < n_bytes; i++) {
+            int j = n_bytes - i - 1;
+            char temp = buf2[j];
+            buf2[j] = buf1[i];
+            buf1[i] = temp;
+        }
 
         /* Escribe el bloque de la derecha a la izquierda y viceversa*/
         fseek(fp, m, SEEK_SET);
-        fwrite(buf2, 1, bytes_to_read, fp);
+        fwrite(buf1, 1, n_bytes, fp);
 
-        fseek(fp, -m - bytes_to_read , SEEK_END);
-        n_half_unread -= fwrite(buf1, 1, bytes_to_read, fp);
+        fseek(fp, -m - n_bytes , SEEK_END);
+        n_half_unread -= fwrite(buf2, 1, n_bytes, fp);
     }
 
     free(buf1);
@@ -81,13 +85,4 @@ int reverse_file_content(char *path, void *_) {
 
     fclose(fp);
     return 0;
-}
-
-void reverse_array(char *arr, int n) {
-    int i;
-    for (i = 0; i < n / 2; i++) {
-        int temp = arr[i];
-        arr[i] = arr[n-i-1];
-        arr[n-i-1] = temp;
-    }
 }
