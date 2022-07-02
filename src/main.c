@@ -27,7 +27,7 @@
 #include "utils.h"
 #include "roll.h"
 
-static const char *const re = "^[-+]?[0-9]+$";
+static const char *const re = "^[-+]?[0-9]+$"; /* Regex para números */
 
 int is_numeric(char *str);
 void verify_exec(int n, char *command);
@@ -202,6 +202,8 @@ int is_numeric(char *str) {
     if (regcomp(&regex, re, REG_EXTENDED)) return -1;
 
     ret = regexec(&regex, str, 0, NULL, 0);
+    regfree(&regex);
+
     if (!ret) return 1;
     else if (ret == REG_NOMATCH) return 0;
     else return -1;
