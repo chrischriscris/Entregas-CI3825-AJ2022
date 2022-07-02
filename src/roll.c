@@ -28,7 +28,7 @@ int rotate_file_content(char *path, void *m) {
 
     /* Asigna memoria para buffers dinámicos */
     buf1 = malloc(sizeof(char) * BUFSIZ);
-    buf2 = malloc(sizeof(char) * n);
+    buf2 = malloc(sizeof(char) * abs(n));
     if (!buf1 || !buf2) {
         fclose(fp);
         free(buf1);

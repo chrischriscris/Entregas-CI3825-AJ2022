@@ -17,6 +17,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <ctype.h>
+#include <regex.h>
 
 #include "wc.h"
 #include "find.h"
@@ -26,6 +27,8 @@
 #include "utils.h"
 #include "roll.h"
 
+static const char *const re = "^[-+]?[0-9]+$";
+
 int is_numeric(char *str);
 void verify_exec(int n, char *command);
 
@@ -33,7 +36,6 @@ int main(int argc, char **argv) {
     char *root = argv[1];
     char *input;
     DIR *dir;
-
 
     if (argc != 2) {
         fprintf(stderr, "Uso: %s <directorio_raiz>\n", argv[0]);
@@ -153,11 +155,17 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            if (n_str && !is_numeric(n_str)) {
-                fprintf(stderr, "El comando roll requiere un número entero \
-                    como argumento");
-                free(input);
-                continue;
+            if (n_str) {
+                int isnum = is_numeric(n_str);
+                if (isnum == -1) {
+                    fprintf(stderr, "Hubo un error verificando el argumento\n");
+                    free(input);
+                    continue;
+                } else if (isnum == 0) {
+                    fprintf(stderr, "El comando roll requiere un número entero como argumento\n");
+                    free(input);
+                    continue;
+                }
             }
 
             n = n_str ? atoi(n_str) : 0;
@@ -183,13 +191,18 @@ void verify_exec(int n, char *command) {
  * Verifica si una string dada es numérica.
  * 
  * @param str: String a verificar.
- * @return 1 
+ * @return 1 si la string es numérica.
+ *     0 en caso contrario.
+ *     -1 si hubo algún error en la verificación.
  */
 int is_numeric(char *str) {
-    int i;
-    for (i = 0; i < strlen(str); i++) {
-        if (!isdigit(str[i]))
-            return 0;
-    }
-    return 1;
+    regex_t regex;
+    int ret;
+
+    if (regcomp(&regex, re, REG_EXTENDED)) return -1;
+
+    ret = regexec(&regex, str, 0, NULL, 0);
+    if (!ret) return 1;
+    else if (ret == REG_NOMATCH) return 0;
+    else return -1;
 }
