@@ -63,7 +63,7 @@ int reverse_file_content(char *path, void *_) {
         fseek(fp, -m - n_bytes , SEEK_END);
         fread(buf2, 1, n_bytes, fp);
 
-        /* Intercambia los bloques en orden inverso */
+        /* Intercambia los buffers en orden inverso */
         for (i = 0 ; i < n_bytes; i++) {
             int j = n_bytes - i - 1;
             char temp = buf2[j];
@@ -71,7 +71,7 @@ int reverse_file_content(char *path, void *_) {
             buf1[i] = temp;
         }
 
-        /* Escribe el bloque de la derecha a la izquierda y viceversa*/
+        /* Escribe nuevamente los bloques */
         fseek(fp, m, SEEK_SET);
         fwrite(buf1, 1, n_bytes, fp);
 
