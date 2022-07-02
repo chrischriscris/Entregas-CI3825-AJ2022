@@ -10,7 +10,6 @@
 #include "utils.h"
 
 int reverse_file_content(char *path, void *_);
-void reverse_array(char *arr, int n);
 
 /**
  * Implementación de la función de interpretador codif.
