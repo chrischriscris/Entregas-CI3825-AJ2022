@@ -113,9 +113,7 @@ int count_chars_and_lines(char *path, int *chars, int *lines) {
     *lines = 0;
     
     while ((c = fgetc(fp)) != EOF) {
-        if (c == '\n') {
-            (*lines)++;
-        }
+        if (c == '\n') (*lines)++;
         (*chars)++;
     }
 
