@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
             char *str = strtok(NULL, " ");
 
             if (strtok(NULL, " ")) {
-                fprintf(stderr, "Uso: find [<cadena>]");
+                fprintf(stderr, "Uso: find [<cadena>]\n");
                 free(input);
                 continue;
             }
@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
             char *str = strtok(NULL, " ");
 
             if (strtok(NULL, " ")) {
-                fprintf(stderr, "Uso: ifind [<cadena>]");
+                fprintf(stderr, "Uso: ifind [<cadena>]\n");
                 free(input);
                 continue;
             }
@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
             char *str2 = strtok(NULL, " ");
 
             if (!str1 || !str2 || !strtok(NULL, " ")) {
-                fprintf(stderr, "Uso: cfind <cadena1> <cadena2>");
+                fprintf(stderr, "Uso: cfind <cadena1> <cadena2>\n");
                 free(input);
                 continue;
             }
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
             char *path = strtok(NULL, " ");
 
             if (!path || strtok(NULL, " ")) {
-                fprintf(stderr, "Uso: repla <file>");
+                fprintf(stderr, "Uso: repla <file>\n");
                 free(input);
                 continue;
             }
