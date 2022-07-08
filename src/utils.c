@@ -35,7 +35,7 @@ int walk_dir_tree(char *root, int (*fn1)(char *, void *),
 
     while ((entry = readdir(dir))) {
         char *d_name = entry->d_name;
-        
+
         /* Verifica que no sean '.' o '..' para no caer em un ciclo
         infinito */
         if (strcmp(d_name, ".") == 0 || strcmp(d_name, "..") == 0) {
