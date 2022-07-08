@@ -4,11 +4,14 @@
  * Autor: Christopher Gómez.
  * Fecha: 29-06-2022.
  */
+#include <fcntl.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "wc.h"
 #include "utils.h"
@@ -103,20 +106,31 @@ int wc(char *root, int *chars, int *lines) {
  *     -1 en caso contrario.
  */
 int count_chars_and_lines(char *path, int *chars, int *lines) {
-    FILE *fp;
-    int c;
+    int fd;
+    int nread;
+    char buf[BUFSIZ];
 
-    fp = fopen(path, "r");
-    if (!fp) return -1;
+    fd = open(path, O_RDONLY);
+    if (fd == -1) return -1;
 
     *chars = 0;
     *lines = 0;
 
-    while ((c = fgetc(fp)) != EOF) {
-        if (c == '\n') (*lines)++;
-        (*chars)++;
+    /* Carga en el buffer bloques enteros y cuenta el número de /n en ellos,
+    llevando también cuenta del número de caracteres leídos */
+    while ((nread = read(fd, buf, BUFSIZ)) > 0) {
+        char *c = buf;
+        int i = 0;
+        *chars += nread;
+
+        for (;i < nread; i++) {
+            if (*c++ == '\n') {
+                (*lines)++;
+            }
+        }
     }
 
-    fclose(fp);
+    close(fd);
+    if (nread == -1) return -1;
     return 0;
 }
