@@ -175,5 +175,6 @@ int find_substr_inside(char *path, void *args_void) {
 
     close(fd);
 
+    if (nread == -1) return -1;
     return 0;
 }
