@@ -122,7 +122,7 @@ int main(int argc, char **argv) {
             char *str1 = strtok(NULL, " ");
             char *str2 = strtok(NULL, " ");
 
-            if (!str1 || !str2 || !strtok(NULL, " ")) {
+            if (!str1 || !str2 || strtok(NULL, " ")) {
                 fprintf(stderr, "Uso: cfind <cadena1> <cadena2>\n");
                 free(input);
                 continue;

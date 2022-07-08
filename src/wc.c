@@ -106,8 +106,7 @@ int wc(char *root, int *chars, int *lines) {
  *     -1 en caso contrario.
  */
 int count_chars_and_lines(char *path, int *chars, int *lines) {
-    int fd;
-    int nread;
+    int fd, nread;
     char buf[BUFSIZ];
 
     fd = open(path, O_RDONLY);

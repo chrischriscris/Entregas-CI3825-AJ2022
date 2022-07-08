@@ -6,9 +6,13 @@
  * Fecha: 29-06-2022.
  */
 #define _GNU_SOURCE
+#include <fcntl.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "find.h"
 #include "utils.h"
@@ -67,7 +71,7 @@ int cfind(char *root, char *str, char *word) {
     args[0] = str;
     args[1] = word;
 
-    res = walk_dir_tree(root, find_substr, NULL, args, NULL);
+    res = walk_dir_tree(root, find_substr_inside, NULL, args, NULL);
 
     free(args);
     return res;
@@ -118,42 +122,58 @@ int find_substr_case(char *str1, void *str2) {
  * @param args: Arreglo {str, word}.
  * @return 1 si la ruta contiene str y tiene a word en su contenido.
  *     0 en caso contrario.
- *     -1 em casp de algún eror.
+ *     -1 en caso de algún eror.
  */
-int find_substr_inside(char *path, void *args) {
-    FILE *fp;
-    char cur_char;
-    char **args_cast = args;
+int find_substr_inside(char *path, void *args_void) {
+    int fd, nread;
+    char buf[BUFSIZ];
+    char **args = args_void;
 
     /* Obtiene las palabras del argumento */
-    char *str = args_cast[0];
-    char *word = args_cast[1];
+    char *str = args[0];
+    char *word = args[1];
     char *cur_word = word;
+
 
     /* Si el nombre del archivo no contiene str, retorna */
     if (!strstr(path, str)) return 0;
 
-    fp = fopen(path, "r");
-    if (!fp) return -1;
+    fd = open(path, O_RDONLY);
+    if (fd == -1) return -1;
 
-    /* Por cada letra del archivo a leer */
-    while ((cur_char = fgetc(fp)) != EOF) {
-        /* Por cada letra en la palabra */
-        for (;cur_char == *cur_word; cur_word++)
-            cur_char = fgetc(fp);
+    /* Por cada bloque leído */
+    while ((nread = read(fd, buf, BUFSIZ)) > 0) {
+        int i = 0;
+        char *cur_char = buf;
 
-        /* Si la palabra coincide, imprime y retorna */
-        if (*cur_word == '\0') {
-            printf("%s\n", path);
-            fclose(fp);
-            return 1;
+        /* Por cada caracter del bloque */
+        for (; i < nread; i++, cur_char++) {
+            /* Por cada letra de la palabra a buscar */
+            for (; *cur_char == *cur_word && i < nread; cur_word++) {
+                cur_char++;
+                i++;
+            }
+
+            /* Si la palabra coincide, imprime y retorna */
+            if (*cur_word == '\0') {
+                printf("%s\n", path);
+                close(fd);
+                return 1;
+            }
+
+            /* Si se llegó al final del bloque, extrae el siguiente */
+            if (i == nread) break;
+
+            /* Si no, se reinicia la palabra */
+            if (cur_word != word) {
+                cur_char--;
+                i--;
+            }
+            cur_word = word;
         }
-
-        /* Si se llegó al final del archivo, termina el ciclo */
-        if (cur_char == EOF) break;
-        cur_word = word;
     }
-    fclose(fp);
+
+    close(fd);
 
     return 0;
 }
