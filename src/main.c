@@ -1,13 +1,27 @@
 /**
- * Emtry-point del interpretador myutil. Soporta los comandos:
+ * Entry-point del interpretador myutil. Se ejecuta indicando la ruta a un directorio que
+ * servirá de raíz de cada comando. Soporta los comandos:
  * 
- * * wc:
- * * find:
- * * ifind:
- * * cfind:
- * * codif:
- * * repla:
- * * roll:
+ * * wc: Por directorio dentro del árbol, imprime el total de líneas y
+ *     caracteres de los archivos regulares que contiene en forma recursiva,
+ *     incluyendo la raíz del árbol.
+ * 
+ * * find: Imprime los nombres de los archivos que tienen en su nombre la
+ *     cadena de su argumento. Sensible a mayúsculas.
+ * 
+ * * ifind: Similar a find, no sensible a mayúsculas.
+ * 
+ * * cfind: Similar a find, pero también busca dentro del contenido de los
+ *     archivos una segunda cadena de argumento.
+ * 
+ * * codif: Reversa los caracteres de un archivo.
+ * 
+ * * roll: Rota los caracteres de un archivo por un desplazamiento de n,
+ *     positivo o negativo, que se asume menor que el tamaño del archivo.
+ * 
+ * * repla: Sustituye en los archivos regulares que se encuentran en el árbol
+ *     del árbol de archivos la ocurrencia de ciertas palabras contenidas
+ *     en un archivo de pares preferiblemente fuera del árbol.
  *
  * Autor: Christopher Gómez.
  * Fecha: 29-06-2022.
