@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
         else if (!strcmp(command, "codif"))
         {
             if (strtok(NULL, " ")) {
-                fprintf(stderr, "Uso: wc\n");
+                fprintf(stderr, "Uso: codif\n");
                 free(input);
                 continue;
             }
