@@ -4,8 +4,12 @@
  * Autor: Christopher Gómez.
  * Fecha: 29-06-2022.
  */
-#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include "codif.h"
 #include "utils.h"
 
@@ -34,19 +38,18 @@ int codif(char *root) {
 int reverse_file_content(char *path, void *_) {
     int n_half_unread, half_size;
     char *buf1, *buf2;
-    FILE *fp = fopen(path, "r+");
-    if (!fp) return -1;
+    int fd = open(path, O_RDWR);
+    if (fd == -1) return -1;
 
     /* Se obtiene el tamaño del archivo */
-    fseek(fp, 0,  SEEK_END);
-    half_size = ftell(fp) / 2;
+    half_size = lseek(fd, 0,  SEEK_END) / 2;
     n_half_unread = half_size;
 
     /* Asigna memoria para buffers dinámicos */
     buf1 = malloc(sizeof(char) * BUFSIZ);
     buf2 = malloc(sizeof(char) * BUFSIZ);
     if (!buf1 || !buf2) {
-        fclose(fp);
+        close(fd);
         free(buf1);
         free(buf2);
         return -1;
@@ -57,11 +60,11 @@ int reverse_file_content(char *path, void *_) {
         int n_bytes = n_half_unread < BUFSIZ ? n_half_unread : BUFSIZ;
 
         /* Lee bloques de la izquierda y derecha */
-        fseek(fp, m, SEEK_SET);
-        fread(buf1, 1, n_bytes, fp);
+        lseek(fd, m, SEEK_SET);
+        read(fd, buf1, n_bytes);
 
-        fseek(fp, -m - n_bytes , SEEK_END);
-        fread(buf2, 1, n_bytes, fp);
+        lseek(fd, -m - n_bytes , SEEK_END);
+        read(fd, buf2, n_bytes);
 
         /* Intercambia los buffers en orden inverso */
         for (i = 0 ; i < n_bytes; i++) {
@@ -72,16 +75,16 @@ int reverse_file_content(char *path, void *_) {
         }
 
         /* Escribe nuevamente los bloques */
-        fseek(fp, m, SEEK_SET);
-        fwrite(buf1, 1, n_bytes, fp);
+        lseek(fd, m, SEEK_SET);
+        write(fd, buf1, n_bytes);
 
-        fseek(fp, -m - n_bytes , SEEK_END);
-        n_half_unread -= fwrite(buf2, 1, n_bytes, fp);
+        lseek(fd, -m - n_bytes , SEEK_END);
+        n_half_unread -= write(fd, buf2, n_bytes);
     }
 
     free(buf1);
     free(buf2);
 
-    fclose(fp);
+    close(fd);
     return 0;
 }
