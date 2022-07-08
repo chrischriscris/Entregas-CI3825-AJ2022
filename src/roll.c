@@ -1,5 +1,9 @@
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include "utils.h"
 
 int rotate_file_content(char *path, void *m);
@@ -18,21 +22,23 @@ int roll(char *root, int n) {
 int rotate_file_content(char *path, void *m) {
     int n = *(int *) m, n_unread, size;
     char *buf1, *buf2;
-    FILE *fp = fopen(path, "r+");
-    if (!fp) return -1;
-
+    int fd; 
+    
+    /* Si n es 0 no se hace nada */
     if (n == 0) return 0;
 
+    fd = open(path, O_RDWR);
+    if (fd == -1) return -1;
+
     /* Se obtiene el tamaño del archivo */
-    fseek(fp, 0,  SEEK_END);
-    size = ftell(fp);
+    size = lseek(fd, 0,  SEEK_END);
     n_unread = size;
 
     /* Asigna memoria para buffers dinámicos */
     buf1 = malloc(sizeof(char) * BUFSIZ);
     buf2 = malloc(sizeof(char) * abs(n));
     if (!buf1 || !buf2) {
-        fclose(fp);
+        close(fd);
         free(buf1);
         free(buf2);
         return -1;
@@ -40,11 +46,9 @@ int rotate_file_content(char *path, void *m) {
 
     /* Dependiendo del signo de n, se rota a la izq o der */
     if (n < 0) {
-        n = -n;
-
         /* Se guardan los n caracteres al comienzo */
-        rewind(fp);
-        n_unread -= fread(buf2, 1, n, fp);
+        lseek(fd, 0, SEEK_SET);
+        n_unread -= read(fd, buf2, -n);
 
         /* Va rotando bloques n posiciones desde el bloque
         más a la izquierda al más a la derecha */
@@ -52,21 +56,21 @@ int rotate_file_content(char *path, void *m) {
             int n_bytes = n_unread < BUFSIZ ? n_unread : BUFSIZ;
 
             /* Toma un bloque */
-            fseek(fp, -n_unread, SEEK_END);
-            fread(buf1, 1, n_bytes, fp);
+            lseek(fd, -n_unread, SEEK_END);
+            read(fd, buf1, n_bytes);
 
             /* Lo coloca adelante n posiciones */
-            fseek(fp, -n - n_bytes, SEEK_CUR);
-            n_unread -= fwrite(buf1, 1, n_bytes, fp);
+            lseek(fd, n - n_bytes, SEEK_CUR);
+            n_unread -= write(fd, buf1, n_bytes);
         }
 
         /* Escribe los n caracteres del comienzo al final */
-        fseek(fp, -n, SEEK_END);
-        fwrite(buf2, 1, n, fp);
+        lseek(fd, n, SEEK_END);
+        write(fd, buf2, -n);
     } else if (n > 0) {
         /* Se guardan los n caracteres al final */
-        fseek(fp, size - n, SEEK_SET);
-        n_unread -= fread(buf2, 1, n, fp);
+        lseek(fd, size - n, SEEK_SET);
+        n_unread -= read(fd, buf2, n);
 
         /* Va rotando bloques n posiciones desde el bloque
         más a la derecha al más a la izquierda */
@@ -74,21 +78,21 @@ int rotate_file_content(char *path, void *m) {
             int n_bytes = n_unread < BUFSIZ ? n_unread : BUFSIZ;
 
             /* Toma un bloque */
-            fseek(fp, n_unread - n_bytes, SEEK_SET);
-            fread(buf1, 1, n_bytes, fp);
+            lseek(fd, n_unread - n_bytes, SEEK_SET);
+            read(fd, buf1, n_bytes);
 
             /* Lo coloca atrás n posiciones */
-            fseek(fp, n - n_bytes, SEEK_CUR);
-            n_unread -= fwrite(buf1, 1, n_bytes, fp);
+            lseek(fd, n - n_bytes, SEEK_CUR);
+            n_unread -= write(fd, buf1, n_bytes);
         }
 
         /* Escribe los n caracteres finales al comienzo */
-        rewind(fp);
-        fwrite(buf2, 1, n, fp);
+        lseek(fd, 0, SEEK_SET);
+        write(fd, buf2, n);
     }
     free(buf1);
     free(buf2);
 
-    fclose(fp);
+    close(fd);
     return 0;
 }
