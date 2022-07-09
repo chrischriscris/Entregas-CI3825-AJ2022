@@ -134,7 +134,6 @@ int find_substr_inside(char *path, void *args_void) {
     char *word = args[1];
     char *cur_word = word;
 
-
     /* Si el nombre del archivo no contiene str, retorna */
     if (!strstr(path, str)) return 0;
 
