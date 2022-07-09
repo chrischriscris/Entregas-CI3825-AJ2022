@@ -77,7 +77,7 @@ char *rand_filename() {
 Node *extract_words_from_file(char *path) {
     FILE *fp;
     Node *l;
-    char p1[50], p2[50];
+    char p1[128], p2[128];
 
     fp = fopen(path, "r");
     if (!fp) return NULL;
