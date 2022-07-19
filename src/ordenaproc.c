@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "procordenador.h"
 #include "procmezclador.h"
+#include "procescritor.h"
 
 #define READ_END 0
 #define WRITE_END 1
@@ -50,12 +51,12 @@ int main(int argc, char *argv[]) {
 
     /* Crea los pipes a usar por los ordenadores */
     if (pipe(sorter_queue) == -1) {
-        perror("Error al crear pipe");
+        perror("Error al crear pipe\n");
         exit(1);
     };
 
     if (pipe(merger_queue)) {
-        perror("Error al crear pipe");
+        perror("Error al crear pipe\n");
         exit(1);
     };
 
@@ -66,7 +67,6 @@ int main(int argc, char *argv[]) {
     for (i=0; i<ns; i++) {
         if ((pid = fork()) == 0) {
             /* Proceso hijo de Lector */
-            int *from_reader = *(reader_sorter + i);
             int j, *to_merger;
 
             /* Cierra las pipes destinadas a los demás ordenadores */
@@ -89,13 +89,13 @@ int main(int argc, char *argv[]) {
             /* Cierra los extremos que no voy a usar de las demás pipes */
             close(sorter_queue[READ_END]);
             close(merger_queue[WRITE_END]);
-            close(from_reader[WRITE_END]);
+            close(reader_sorter[i][WRITE_END]);
 
             /* Empieza a trabajar */
             do_sorter_work(
                 i, nm,
                 sorter_queue[WRITE_END], merger_queue[READ_END],
-                from_reader[READ_END], to_merger
+                reader_sorter[i][READ_END], to_merger
             );
 
             free(reader_sorter);
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
             /* Termina el proceso principal solo si no hay por lo menos
             un lector al terminar de crearlos todos */
             if (i == ns-1 && !sorter_count) {
-                fprintf("No se pudo crear ningún lector, terminando programa\n");
+                fprintf(stderr, "No se pudo crear ningún lector, terminando programa\n");
                 exit(1);
             }
         }
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
     
     /* Crean las pipes a usar por los mezcladores */
     if (pipe(reader_writer) == -1) {
-        perror("Error al crear pipe");
+        perror("Error al crear pipe\n");
         exit(1);
     }
 
@@ -124,9 +124,10 @@ int main(int argc, char *argv[]) {
     /* ================ MEZCLADORES ================ */
     for (i=0; i<nm; i++) {
         if ((pid = fork()) == 0) {
+            int j;
+
+            printf("Mezclador %d creado\n", i);
             /* Proceso hijo de Lector */
-            int *from_sorter = *(sorter_merger + i);
-            int j, *to_writer;
 
             /* Cierra las pipes destinadas a los demás mezcladores */
             for (j=0; j<ns; j++) {
@@ -168,9 +169,9 @@ int main(int argc, char *argv[]) {
         } else if (pid > 0) {
             merger_count++;
         }  else {
-            perror("Error al crear mezclador");
+            perror("Error al crear mezclador\n");
             if (i == ns-1 && !merger_count) {
-                fprintf("No se pudo crear ningún escritor, terminando programa\n");
+                fprintf(stderr, "No se pudo crear ningún escritor, terminando programa\n");
                 exit(1);
             }
         }
@@ -178,81 +179,46 @@ int main(int argc, char *argv[]) {
 
     /* ================ ESCRITOR ================ */
     if ((pid = fork()) == 0) {
-            /* Proceso hijo de Lector */
-            int *from_sorter = *(sorter_merger + i);
-            int j, *to_writer;
+        /* Proceso hijo de Lector */
+        int j, *from_merger;
 
-            /* Cierra las pipes que no usará */
-            close(sorter_queue[READ_END]);
-            close(sorter_queue[WRITE_END]);
-            close(merger_queue[READ_END]);
-            close(merger_queue[WRITE_END]);
-            for (j=0; j<ns; j++) {
-                close(reader_sorter[j][READ_END]);
-                close(reader_sorter[j][WRITE_END]);
-                free(reader_sorter[j]);
-            }
-            free(reader_sorter);
-
-            /* Cierra los extremos de las pipes que no usará */
-
-        int j, n = 0;
-
-        /* Cierra los pipes de lector-ordenador */
+        /* Cierra las pipes que no usará */
         close(sorter_queue[READ_END]);
         close(sorter_queue[WRITE_END]);
+        close(merger_queue[READ_END]);
+        close(merger_queue[WRITE_END]);
+        close(reader_writer[WRITE_END]);
         for (j=0; j<ns; j++) {
             close(reader_sorter[j][READ_END]);
             close(reader_sorter[j][WRITE_END]);
+            free(reader_sorter[j]);
         }
-        close(merger_queue[READ_END]);
-        close(merger_queue[WRITE_END]);
-        for (j=0; j<nm; j++) {
+        free(sorter_merger);
+        for (j=0; j<ns; j++) {
             close(sorter_merger[j][READ_END]);
             close(sorter_merger[j][WRITE_END]);
+            free(sorter_merger[j]);
         }
+        free(sorter_merger);
 
-        /* Cierra los pipes de mezclador-escritor */
-        close(reader_writer[WRITE_END]);
+        /* Guarda en un arreglo los extremos de lectura de las
+        pipes Mezclador - Escritor */
+        /* Aborta el proceso si no puede obtener memoria */
+        from_merger = safe_malloc(sizeof(int) * nm);
         for (j=0; j<nm; j++) {
-            close(merger_writer[j][WRITE_END]);
+            from_merger[j] = merger_writer[j][WRITE_END];
+            close(sorter_merger[j][READ_END]);
         }
 
-        while (1) {
-            if (n == nm) break;
+        do_writer_work(nm, reader_writer[READ_END], from_merger);
 
-            /* Lee el mezclador asignado */
-            int m;
-            read(reader_writer[READ_END], &m, sizeof(int));
-            printf("Al escritor %d le dieron mezclador %d\n", n, m);
-            
-            /* Lee el tamaño de la secuencia */
-            int size;
-            read(merger_writer[m][READ_END], &size, sizeof(int));
-
-            /* Lee la secuencia */
-            int *secuencia = malloc(size * sizeof(int));
-            for (j=0; j<size; j++) {
-                read(merger_writer[m][READ_END], &secuencia[j], sizeof(int));
-            }
-
-            /* Imprime la secuencia */
-            printf("Escritor escribiendo secuencia de %d elementos\n", size);
-            /* for (j=0; j<size; j++) {
-                printf("%d  ", secuencia[j]);
-            }
-            */
-
-            n++;
-        }
-        /* Escribe ordenado salida */
         printf("A punto de morir\n");
         exit(0);
     }
 
     /* ============= LECTOR ============= */
+
     /* No usa la escritura de cola de ords */
-    
     close(sorter_queue[WRITE_END]);
     close(reader_writer[READ_END]);
 

@@ -32,13 +32,15 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
         n_read = read(from_sorter, &arriving_seq_size, sizeof(int));
         if (n_read == 0) break;
 
-        printf("Mezclador %d mezclando %d enteros\n", i, arriving_seq_size);
+        printf("Mezclador %d mezclando %d enteros\n", n, arriving_seq_size);
         /* Lee los números de la secuencia */
         for (i=0; i<arriving_seq_size; i++) {
             int m;
             read(from_sorter, &m, sizeof(int));
             printf("%d  ", m);
         }
+        printf("\n");
+        sleep(2);
     }
     close(merger_queue);
 

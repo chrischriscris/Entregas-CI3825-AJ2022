@@ -21,14 +21,13 @@
  * @param from_reader Extremo de lectura de pipe para obtener nombres de
  *     archivos del lector.
  * @param to_merger Arreglo de extremos de lecturas de pipes para pasar la
- *     secuencia al mezclador, de tamaño m. Debe liberarse su memoria.
+ *     secuencia al mezclador, de tamaño nm. Debe liberarse su memoria.
  */
 void do_sorter_work(
     int n, int nm,
     int sorter_queue, int merger_queue,
     int from_reader,  int *to_merger
 ) {
-
     int i;
     for (;;) {
         int path_size, n_read, m;
@@ -64,7 +63,7 @@ void do_sorter_work(
         if (!n_read) exit(1);
 
         /* Encola el tamaño y la secuencia */
-        int size = 5*i + 10;
+        int size = 5*n + 10;
         write(to_merger[m], &size, sizeof(int));
         for (i=0; i<size; i++) {
             write(to_merger[m], &i, sizeof(int));
