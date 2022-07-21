@@ -15,8 +15,10 @@ typedef struct {
   size_t size;    /* Tamaño total del arreglo */
 } Sequence;
 
-void Sequence_new(size_t n);
+Sequence *Sequence_new(size_t n);
 int Sequence_insert(Sequence *seq, int64_t el);
+int Sequence_shrink(Sequence *seq);
+void Sequence_sort(Sequence *seq);
 void Sequence_destroy(Sequence *seq);
 
 #endif

@@ -8,6 +8,8 @@
 #include <stdlib.h>
 
 #include "procordenador.h"
+#include "Sequence.h"
+#include "utils.h"
 
 /**
  * Hace el trabajo del ordenador.
@@ -30,6 +32,7 @@ void do_sorter_work(
 ) {
     int i;
     for (;;) {
+        Sequence *seq;
         int path_size, n_read, m;
         char *path;
 
@@ -52,22 +55,32 @@ void do_sorter_work(
             continue;
         }
 
-        /* Procede a leer los datos del archivo */
+        /* Procede a leer y ordenar los datos del archivo */
         printf("Ordenador %d ordenando %s\n", n, path);
-        sleep(2);
+        seq = extract_sequence_from_file(path);
+        if (!seq) {
+            fprintf(stderr, "Error al leer archivo %s\n", path);
+            free(path);
+            continue;
+        }
+        free(path);
+        Sequence_sort(seq);
 
         /* Al terminar, espera algún mezclador desoculpado */
         /* Si no pudo obtener mezclador, termina el proceso con
         estado de error */
         n_read = read(merger_queue, &m, sizeof(int));
-        if (!n_read) exit(1);
-
-        /* Encola el tamaño y la secuencia */
-        int size = 5*n + 10;
-        write(to_merger[m], &size, sizeof(int));
-        for (i=0; i<size; i++) {
-            write(to_merger[m], &i, sizeof(int));
+        if (!n_read) {
+            Sequence_destroy(seq);
+            exit(1);
         }
+
+        /* Encola el tamaño y la secuencia y luego la secuencia */
+        write(to_merger[m], &seq->size, sizeof(size_t));
+        for (i=0; i<seq->size; i++) {
+            write(to_merger[m], seq->arr + i, sizeof(int64_t));
+        }
+        Sequence_destroy(seq);
     }
 
     /* Al terminar su trabajo cierra los extremos de cada pipe y libera

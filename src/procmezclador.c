@@ -8,6 +8,8 @@
 #include <stdlib.h>
 
 #include "procmezclador.h"
+#include "Sequence.h"
+#include "utils.h"
 
 /**
  * Hace el trabajo del mezclador.
@@ -22,29 +24,39 @@
  */
 void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
     int i;
-    int local_seq_size;
+    Sequence *local_seq = Sequence_new(0);
+
     for (;;) {
-        int arriving_seq_size, n_read;
+        Sequence *arriving_seq;
+
+        int n_read;
+        size_t arriving_seq_size;
         /* Se encola como disponible */
         write(merger_queue, &n, sizeof(int));
 
         /* Lee tamaño de la secuencia */
-        n_read = read(from_sorter, &arriving_seq_size, sizeof(int));
+        n_read = read(from_sorter, &arriving_seq_size, sizeof(size_t));
         if (n_read == 0) break;
 
-        printf("Mezclador %d mezclando %d enteros\n", n, arriving_seq_size);
+        printf("Mezclador %d mezclando %ld enteros\n", n, arriving_seq_size);
+        arriving_seq = Sequence_new(arriving_seq_size);
+        if (!arriving_seq) continue;
+
         /* Lee los números de la secuencia */
         for (i=0; i<arriving_seq_size; i++) {
-            int m;
-            read(from_sorter, &m, sizeof(int));
-            printf("%d  ", m);
+            int64_t m;
+            read(from_sorter, &m, sizeof(int64_t));
+            Sequence_insert(arriving_seq, m);
+            printf("%ld  ", m);
         }
         printf("\n");
+
+        /* Combinar con la propia */
         sleep(2);
     }
     close(merger_queue);
 
     /* Pasa la secuencia al escritor */
-    write(to_writer, &local_seq_size, sizeof(int));
-    for (i=0; i<local_seq_size; i++) write(to_writer, &i, sizeof(int));
+    write(to_writer, &local_seq->size, sizeof(int));
+    for (i=0; i<local_seq->size; i++) write(to_writer, local_seq->arr + i, sizeof(int64_t));
 }

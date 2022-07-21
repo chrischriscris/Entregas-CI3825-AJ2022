@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "utils.h"
 
+#include "utils.h"
+#include "Sequence.h"
 
 void *safe_malloc(size_t n) {
     /* Asigna memoria */
@@ -44,4 +45,43 @@ int **initialize_pipes(int n) {
     }
 
     return pipe_arr;
+}
+
+/**
+ * Extrae una secuencia de enteros de un archivo, el archivo solamente
+ * contiene enteros separados por saltos de línea.
+ * 
+ * @param path String con la ruta al archivo.
+ * @return Apuntador a la secuencia, su memoria debe ser liberada.
+ *     NULL en caso de algún error.
+ */
+Sequence *extract_sequence_from_file(char *path) {
+    Sequence *seq;
+    int64_t n;
+    FILE *fp;
+
+    seq = Sequence_new(32);
+    if (!seq) return NULL;
+
+    fp = fopen(path, "r");
+    if (!fp) {
+        free(seq);
+        return NULL;
+    }
+
+    while (fscanf(fp, "%ld", &n) != EOF) {
+        if (!Sequence_insert(seq, n)) {
+            fprintf(stderr, "Error al insertar elemento %ld en la secuencia.\n", n);
+            continue;
+        }
+    }
+    
+    if (!Sequence_shrink(seq)) {
+        fprintf(stderr, "Error manipulando la secuencia.\n");
+        free(seq);
+        return NULL;
+    }
+
+    fclose(fp);
+    return seq;
 }
