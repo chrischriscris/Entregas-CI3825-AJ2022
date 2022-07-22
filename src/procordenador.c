@@ -9,7 +9,6 @@
 
 #include "procordenador.h"
 #include "Sequence.h"
-#include "utils.h"
 
 /**
  * Hace el trabajo del ordenador.
@@ -67,8 +66,6 @@ void do_sorter_work(
         Sequence_sort(seq);
 
         /* Al terminar, espera algún mezclador desoculpado */
-        /* Si no pudo obtener mezclador, termina el proceso con
-        estado de error */
         n_read = read(merger_queue, &m, sizeof(int));
         if (!n_read) {
             Sequence_destroy(seq);

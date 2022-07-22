@@ -16,10 +16,11 @@ typedef struct {
 } Sequence;
 
 Sequence *Sequence_new(int n);
+Sequence *extract_sequence_from_file(char *path);
 int Sequence_insert(Sequence *seq, int64_t el);
 int Sequence_shrink(Sequence *seq);
 void Sequence_sort(Sequence *seq);
-Sequence *Sequence_merge(Sequence *seq1, Sequence *seq2);
+int Sequence_merge(Sequence **seq1, Sequence *seq2);
 int Sequence_write_merged(Sequence **seq_arr, int n, char *path);
 void Sequence_destroy(Sequence *seq);
 

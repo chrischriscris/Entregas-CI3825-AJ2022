@@ -9,7 +9,6 @@
 
 #include "procmezclador.h"
 #include "Sequence.h"
-#include "utils.h"
 
 /**
  * Hace el trabajo del mezclador.
@@ -28,7 +27,7 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
     if (!local_seq) exit(1);
 
     for (;;) {
-        Sequence *arriving_seq, *temp;
+        Sequence *arriving_seq;
 
         int n_read;
         int arriving_seq_size;
@@ -51,13 +50,9 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
             Sequence_insert(arriving_seq, m);
         }
 
-        /* Mezcla la secuencia */
-        temp = Sequence_merge(local_seq, arriving_seq);
-        if (!temp) {
-            free(arriving_seq);
-            continue;
-        }
-        local_seq = temp;
+        /* Mezcla la secuencia con la local */
+        if (!Sequence_merge(&local_seq, arriving_seq))
+            fprintf(stderr, "Error al mezclar una secuencia\n");
     }
     close(from_sorter);
     close(merger_queue);

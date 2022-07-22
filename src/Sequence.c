@@ -3,7 +3,7 @@
 
 #include "Sequence.h"
 
-#define INFINITY 9223372036854775807
+#define LONG_MAX 9223372036854775807
 
 /**
  * Asigna memoria e inicializa una secuencia con una capacidad
@@ -27,10 +27,50 @@ Sequence *Sequence_new(int n) {
 }
 
 /**
+ * Extrae una secuencia de enteros de un archivo, el archivo solamente
+ * contiene enteros separados por saltos de línea.
+ * 
+ * @param path String con la ruta al archivo.
+ * @return Apuntador a la secuencia, su memoria debe ser liberada.
+ *     NULL en caso de algún error.
+ */
+Sequence *extract_sequence_from_file(char *path) {
+    Sequence *seq;
+    int64_t n;
+    FILE *fp;
+
+    seq = Sequence_new(32);
+    if (!seq) return NULL;
+
+    fp = fopen(path, "r");
+    if (!fp) {
+        free(seq);
+        return NULL;
+    }
+
+    while (fscanf(fp, "%ld", &n) != EOF) {
+        if (!Sequence_insert(seq, n)) {
+            fprintf(stderr, "Error al insertar elemento %ld en la secuencia.\n", n);
+            continue;
+        }
+    }
+    
+    if (!Sequence_shrink(seq)) {
+        fprintf(stderr, "Error manipulando la secuencia.\n");
+        free(seq);
+        return NULL;
+    }
+
+    fclose(fp);
+    return seq;
+}
+
+/**
  * Inserta un elemento en la secuencia.
  * 
  * @param n Capacidad inicial de la secuencia.
- * @return 1 si pudo insertar, 0 en caso contrario.
+ * @return 1 si la operación fue exitosa.
+ *     0 en caso contrario.
  */
 int Sequence_insert(Sequence *seq, int64_t el) {
     if (seq->used == seq->size) {
@@ -50,7 +90,8 @@ int Sequence_insert(Sequence *seq, int64_t el) {
  * que contiene.
  * 
  * @param seq Apuntado a la secuencia.
- * @return 1 si pudo encoger, 0 en caso contrario.
+ * @return 1 si pudo encoger
+ *     0 en caso contrario.
  */
 int Sequence_shrink(Sequence *seq) {
     if (!seq->used) {
@@ -97,9 +138,9 @@ void Sequence_sort(Sequence *seq) {
  * @return 1 si la operación fue exitosa.
  *     0 en caso contrario.
  */
-Sequence *Sequence_merge(Sequence **seq1, Sequence *seq2) {
-    int *arr1 = (*seq1)->arr, *arr2 = seq2->arr;
-    int     n = (*seq1)->size,    m = seq2->size;
+int Sequence_merge(Sequence **seq1, Sequence *seq2) {
+    int64_t *arr1 = (*seq1)->arr, *arr2 = seq2->arr;
+    int n = (*seq1)->size, m = seq2->size;
     int i, j;
 
     /* Crea la nueva secuencia */
@@ -126,56 +167,51 @@ Sequence *Sequence_merge(Sequence **seq1, Sequence *seq2) {
 }
 
 /**
+ * De un arreglo de n secuencias ordenadas, escribe en un archivo
+ * todos sus elementos mezclados en orden ascendente.
  * 
- * 
- * @param seq_arr 
+ * @param seq_arr Arreglo de apuntadores a secuencias.
  * @param n 
  * @param path 
- * @return int 
+ * @return 1 si la operación fue exitosa
+ *     0 en caso contrario.
  */
 int Sequence_write_merged(Sequence **seq_arr, int n, char *path) {
     FILE *fp;
-    int i, *index, index_total = 0, first = 1;
+    int i, n_total = 0;
+    int *index;
 
-    /* Crea un arreglo para mantener los índices de cada secuencia */
-    if (!(index = malloc(sizeof(int) * n))) return -1;
-    for (i=0; i<n; i++) index[i] = 0;
-    
-    /* Busca el total de números a escribir */
-    for (i = 0; i < n; i++) index_total += seq_arr[i]->size;
-    
-    /* Escribe en la salida, viendo el menor de los enteros de las secuencias */
-    if (!(fp = fopen(path, "w"))) return -1;
-    for (;;) {
-        int i, min_index = 0;
-        int64_t min = INFINITY;
-
-        /* Verifica si todas las secuencias ya fueron escritas */
-        if (!index_total) break;
-
-        /* Busca el menor entero entre las secuencias */
-        for (i = 0; i < n; i++) {
-            if (index[i] < seq_arr[i]->size && seq_arr[i]->arr[index[i]] < min) {
-                min = seq_arr[i]->arr[index[i]];
-                min_index = i;
-            }
-        }
-
-        /* Escribe el menor de los enteros de las secuencias */
-        if (first) {
-            first = 0;
-            fprintf(fp, "%ld", min);
-        } else {
-            fprintf(fp, "\n%ld", min);
-        }
-
-        index[min_index]++;
-        index_total--;
+    /* Mantiene en un arreglo apuntadores al arreglo interno de
+    cada secuencia */
+    if (!(index = malloc(sizeof(int) * n))) return 0;
+    for (i=0; i<n; i++) {
+        n_total += seq_arr[i]->size;
+        index[i] = 0;
     }
+    
+    /* Por cada iteración busca la menor cabeza y la escribe */
+    if (!(fp = fopen(path, "w"))) return 0;
+    for (i=0; i<n_total; i++) {
+        int j;
+        int64_t min = LONG_MAX;
+
+        /* Halla la menor cabeza de arreglo */
+        for (j=0; j<n; j++) {
+            int k = index[j];
+
+            /* Si no se ha llegado al final del j-ésimo arreglo */
+            if (k < seq_arr[j]->size)
+                if (seq_arr[j]->arr[k] < min)
+                    min = seq_arr[i]->arr[k];
+        }
+
+        /* Escribe el menor hallado */
+        fprintf(fp, i == 0 ? "%ld" : "\n%ld", min);
+    }
+    fclose(fp);
 
     free(index);
-    fclose(fp);
-    return 0;
+    return 1;
 }
 
 /**

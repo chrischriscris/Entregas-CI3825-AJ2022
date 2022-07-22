@@ -1,11 +1,10 @@
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <dirent.h>
-#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "utils.h"
 #include "Sequence.h"
@@ -60,45 +59,6 @@ int **initialize_pipes(int n) {
 }
 
 /**
- * Extrae una secuencia de enteros de un archivo, el archivo solamente
- * contiene enteros separados por saltos de línea.
- * 
- * @param path String con la ruta al archivo.
- * @return Apuntador a la secuencia, su memoria debe ser liberada.
- *     NULL en caso de algún error.
- */
-Sequence *extract_sequence_from_file(char *path) {
-    Sequence *seq;
-    int64_t n;
-    FILE *fp;
-
-    seq = Sequence_new(32);
-    if (!seq) return NULL;
-
-    fp = fopen(path, "r");
-    if (!fp) {
-        free(seq);
-        return NULL;
-    }
-
-    while (fscanf(fp, "%ld", &n) != EOF) {
-        if (!Sequence_insert(seq, n)) {
-            fprintf(stderr, "Error al insertar elemento %ld en la secuencia.\n", n);
-            continue;
-        }
-    }
-    
-    if (!Sequence_shrink(seq)) {
-        fprintf(stderr, "Error manipulando la secuencia.\n");
-        free(seq);
-        return NULL;
-    }
-
-    fclose(fp);
-    return seq;
-}
-
-/**
  * Recorre un arbol de directorios en DFS.
  * 
  * @param root: String con la ruta del directorio raiz a recorrer.
@@ -145,7 +105,7 @@ int walk_dir_tree(char *root, int sorter_queue, int *to_sorter) {
                 /* De lo contrario, se hace una operación sobre el archivo,
                 de ser regular*/
                 if (is_regular_file(full_path)) {
-                    if (is_txt(full_path)) {
+                    if (is_txt_file(full_path)) {
                         int n, path_len;
                         if (read(sorter_queue, &n, sizeof(int)) == -1) {
                             free(full_path);
@@ -201,4 +161,17 @@ int is_regular_file(char *path) {
     if (stat(path, &st) != 0) return -1;
 
     return S_ISREG(st.st_mode);
+}
+
+/**
+ * Verifica si un archivo tiene la extensión .txt.
+ *
+ * @param path: String con la ruta del archivo a verificar.
+ * @return 1 si el archivo tiene la extensión.
+ *     0 en caso contrario.
+ *     -1 en caso de error.
+ */
+int is_txt_file(char *path) {
+    char *dot = strrchr(path, '.');
+    return dot && !strcmp(dot, ".txt");
 }
