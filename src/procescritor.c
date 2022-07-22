@@ -18,8 +18,9 @@
  *     listo para pasar su secuencia.
  * @param from_merger Arreglo de extremos de lectura de pipes para leer la
  *     secuencia del mezclador, de tamaño nm. Debe liberarse su memoria.
+ * @param path Ruta a archivo de salida
  */
-void do_writer_work(int nm, int from_reader, int *from_merger) {
+void do_writer_work(int nm, int from_reader, int *from_merger, char *path) {
     int i;
     Sequence **seqs_arr = malloc(sizeof(Sequence)*nm);
 
@@ -44,7 +45,7 @@ void do_writer_work(int nm, int from_reader, int *from_merger) {
         }
     }
 
-    Sequence_write_merger(seqs_arr);
+    Sequence_write_merged(seqs_arr, nm, path);
     for (i=0; i<nm; i++) {
         Sequence_destroy(seqs_arr[i]);
         close(from_merger[i]);

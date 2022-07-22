@@ -18,7 +18,7 @@
 int main(int argc, char *argv[]) {
     int ns, nm, i, pid;
     char *root, *outfile;
-    int sorter_count, merger_count;
+    int sorter_count, merger_count, *to_sorter;
 
     /* Mecanismos de comunicación */
 
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
             /* Termina el proceso principal solo si no hay por lo menos
             un lector al terminar de crearlos todos */
             if (i == ns-1 && !sorter_count) {
-                fprintf(stderr, "No se pudo crear ningún lector, terminando programa\n");
+                fprintf(stderr, "No se pudo crear ningún ordenador, terminando programa\n");
                 exit(1);
             }
         }
@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
         }  else {
             perror("Error al crear mezclador\n");
             if (i == ns-1 && !merger_count) {
-                fprintf(stderr, "No se pudo crear ningún escritor, terminando programa\n");
+                fprintf(stderr, "No se pudo crear ningún ordenador, terminando programa\n");
                 exit(1);
             }
         }
@@ -210,10 +210,13 @@ int main(int argc, char *argv[]) {
             close(merger_writer[j][WRITE_END]);
         }
 
-        do_writer_work(nm, reader_writer[READ_END], from_merger);
+        do_writer_work(nm, reader_writer[READ_END], from_merger, outfile);
 
         printf("A punto de morir\n");
         exit(0);
+    } else if (pid < 0) {
+        fprintf(stderr, "No se pudo crear el escritor, terminando programa\n");
+        exit(1);
     }
 
     /* ============= LECTOR ============= */
@@ -222,58 +225,60 @@ int main(int argc, char *argv[]) {
     close(sorter_queue[WRITE_END]);
     close(reader_writer[READ_END]);
 
+    /* Solo usa la escritura de Lector - Ordenador */
+    to_sorter = safe_malloc(sizeof(int) * ns);
+    for (i=0; i<ns; i++) {
+        to_sorter[i] = reader_sorter[i][WRITE_END];
+        close(reader_sorter[i][READ_END]);
+    }
+
+    /* No usa ninguna pipe Ordenador - Mezclador */
     for (i=0; i<nm; i++) {
         close(sorter_merger[i][READ_END]);
         close(sorter_merger[i][WRITE_END]);
-    }
+        free(sorter_merger[i]);
 
-    /* No usa la lectura de nadie */
-    for (i=0; i<ns; i++)
-        close(reader_sorter[i][READ_END]);
+        close(merger_writer[i][READ_END]);
+        close(merger_writer[i][WRITE_END]);
+        free(merger_writer[i]);
+    }
+    free(sorter_merger);
+    free(merger_writer);
 
     /* Pasarle a los ordenadores los archivos */
-    /* DENTRO DE TRAVERSE_DIR */
-    for (i=0; i<10; i++) {
-        char filename[100];
-        int n, m;
-        sprintf(filename, "file%d.txt", i);
+    walk_dir_tree(root, sorter_queue[READ_END], to_sorter);
 
-        read(sorter_queue[READ_END], &n, sizeof(int));
-        m = strlen(filename);
-        write(reader_sorter[n][WRITE_END], &m, sizeof(int));
-        write(reader_sorter[n][WRITE_END], filename, m+1);
-    }
-
-    /* Cierra los extremos de los pipes */
-    for (i=0; i<ns; i++)
-        close(reader_sorter[i][WRITE_END]);
-
+    /* Espera que vayan terminando los ordenadores */
     for (i=0; i<ns; i++) {
         int n;
+        close(reader_sorter[i][WRITE_END]);
+        free(reader_sorter[i]);
+
+        /* Para bloquear hasta que no vea que los ordenadores
+        terminaron y se volvieron a encolar */
         read(sorter_queue[READ_END], &n, sizeof(int));
-        close(reader_sorter[n][READ_END]);
     }
     close(sorter_queue[READ_END]);
+    free(reader_sorter);
 
-    /* Cierra los extremos de los pipes */
-    for (i=0; i<nm; i++)
-        close(sorter_merger[i][WRITE_END]);
-
+    /* Indica al escritor que está listo para el último,
+    encolándole mezcladores apenas estén listos */
     for (i=0; i<nm; i++) {
         int n;
         read(merger_queue[READ_END], &n, sizeof(int));
 
-        /* Cierra pipe */
-        close(sorter_merger[n][READ_END]);
-
         /* Se encola el mezclador al escritor */
         write(reader_writer[WRITE_END], &n, sizeof(int));
     }
-
     close(merger_queue[READ_END]);
     close(reader_writer[WRITE_END]);
 
-    for (i=0; i<nm+ns+1;i++) wait(NULL);
+    for (i=0; i<nm+ns+1; i++) {
+        int status;
+        pid = wait(&status);
+
+        if (status) fprintf(stderr, "Error en el proceso %d\n", pid);
+    }
     printf("Terminó el padre\n");
     return 0;
 }

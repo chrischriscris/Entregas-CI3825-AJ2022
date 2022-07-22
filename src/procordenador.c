@@ -33,7 +33,7 @@ void do_sorter_work(
     int i;
     for (;;) {
         Sequence *seq;
-        int path_size, n_read, m;
+        int path_len, n_read, m;
         char *path;
 
         /* Se encola como disponible */
@@ -41,17 +41,17 @@ void do_sorter_work(
 
         /* Espera a que le manden un archivo, si no lee nada significa
         que cerraron los extremos y sale del ciclo */
-        n_read = read(from_reader, &path_size, sizeof(int));
+        n_read = read(from_reader, &path_len, sizeof(int));
         if (n_read == -1) continue;
         if (!n_read) break;
 
         /* Guarda el filename */
-        path = malloc(path_size+1);
+        path = malloc(path_len);
 
         /* Pasa al siguiente archivo si no puede guardar el filename */
         if (!path) continue;
-        n_read = read(from_reader, path, path_size+1);
-        if (n_read != path_size+1) {
+        n_read = read(from_reader, path, path_len);
+        if (n_read != path_len) {
             free(path);
             continue;
         }

@@ -3,7 +3,7 @@
 
 #include "Sequence.h"
 
-#define INFINITE 9223372036854775807
+#define INFINITY 9223372036854775807
 
 /**
  * Asigna memoria e inicializa una secuencia con una capacidad
@@ -53,7 +53,7 @@ int Sequence_insert(Sequence *seq, int64_t el) {
  * @return 1 si pudo encoger, 0 en caso contrario.
  */
 int Sequence_shrink(Sequence *seq) {
-    if (seq->used == 0) {
+    if (!seq->used) {
         seq->size = 0;
         seq->arr = NULL;
         return 1;
@@ -89,46 +89,40 @@ void Sequence_sort(Sequence *seq) {
 }
 
 /**
- * @
+ * Mezcla de forma ordenada dos secuencias, liberando la memoria
+ * de la segunda.
  * 
- * @param seq1 
- * @param seq2 
- * @return Sequence* 
+ * @param seq1 Referencia al apuntador a la primera secuencia (out).
+ * @param seq2 Apuntador a la segunda secuencia.
+ * @return 1 si la operación fue exitosa.
+ *     0 en caso contrario.
  */
-Sequence *Sequence_merge(Sequence *seq1, Sequence *seq2) {
-    int i, j, k;
-    int n = seq1->size, m = seq2->size;
-    int k = n + m;
-    int64_t *secuencia1 = seq1->arr, *secuencia2 = seq2->arr;
+Sequence *Sequence_merge(Sequence **seq1, Sequence *seq2) {
+    int *arr1 = (*seq1)->arr, *arr2 = seq2->arr;
+    int     n = (*seq1)->size,    m = seq2->size;
+    int i, j;
 
     /* Crea la nueva secuencia */
-    Sequence *sequence = create_sequence(k);
-    if (sequence == NULL) return NULL;
+    Sequence *merged_seq = Sequence_new(n+m);
+    if (!merged_seq) return 0;
 
-    /* Mezcla las secuencias */
-    for (i = 0, j = 0, k = 0; i < k; i++) {
-
-        /* Si ambas secuencias no están vacías, revisa cuál de los dos tiene el menor */
-        if (j < n && k < m) {
-            if (secuencia1[j] < secuencia2[k]) {
-                sequence->arr[i] = secuencia1[j];
-                j++;
-            } else {
-                sequence->arr[i] = secuencia2[k];
-                k++;
-            }
-        } else if (j < n) {
-            /* Si la secuencia 2 ya está vacía, se copia el resto de la 1 */
-            sequence->arr[i] = secuencia1[j];
-            j++;
-        } else {
-            /* Si la secuencia 1 ya está vacía, se copia el resto de la 2 */
-            sequence->arr[i] = secuencia2[k];
-            k++;
-        }
+    /* Mezcla las secuencias, se usa el hecho de que ambas están ordenadas */
+    for (i=0, j=0; i<n && j<m; i++) {
+        if (arr1[i] < arr2[j]) Sequence_insert(merged_seq, arr1[i++]);
+        else Sequence_insert(merged_seq, arr2[j++]);
     }
 
-    return sequence;
+    /* Se copia el resto de la secuencia restante */
+    while (i<n) Sequence_insert(merged_seq, arr1[i++]);
+    while (j<m) Sequence_insert(merged_seq, arr2[j++]);
+
+    /* Libera la memoria de las secuencias anteriores y modifica el
+    apuntador para que apunte a la secuencia de retorno */
+    Sequence_destroy(*seq1);
+    Sequence_destroy(seq2);
+    *seq1 = merged_seq;
+
+    return 1;
 }
 
 /**
@@ -154,7 +148,7 @@ int Sequence_write_merged(Sequence **seq_arr, int n, char *path) {
     if (!(fp = fopen(path, "w"))) return -1;
     for (;;) {
         int i, min_index = 0;
-        int64_t min = INFINITE;
+        int64_t min = INFINITY;
 
         /* Verifica si todas las secuencias ya fueron escritas */
         if (!index_total) break;

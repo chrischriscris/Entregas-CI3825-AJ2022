@@ -102,16 +102,12 @@ Sequence *extract_sequence_from_file(char *path) {
  * Recorre un arbol de directorios en DFS.
  * 
  * @param root: String con la ruta del directorio raiz a recorrer.
- * @param fn1: Funcion a llamar por cada archivo regular en el árbol,
- *     de directorios, que retorna un entero positivo si fue exitosa
- *     y -1 en caso de error. Si es NULL no se llama.
- * @param fn2: Análoga a la anterior, se llama por cada directorio del árbol.
- * @param arg1: Apuntador al argumento que recibirá fn1.
- * @param arg2: Apuntador al argumento que recibirá fn2.
+ * @param sorter_queue: Pipe para leer de la cola
+ * @param to_sorter: Arreglo de pipes 
  * @return 0 en caso de exito.
  *     -1 en caso de error.
  */
-int walk_dir_tree(char *root) {
+int walk_dir_tree(char *root, int sorter_queue, int *to_sorter) {
     struct dirent *entry;
 
     /* Abre el directorio */
@@ -141,7 +137,7 @@ int walk_dir_tree(char *root) {
 
             if (is_dir) {
                 /* Si es directorio, se explora recursivamente */
-                if (walk_dir_tree(full_path) == -1) {
+                if (walk_dir_tree(full_path, sorter_queue, to_sorter) == -1) {
                     free(full_path);
                     continue;
                 }
@@ -149,7 +145,24 @@ int walk_dir_tree(char *root) {
                 /* De lo contrario, se hace una operación sobre el archivo,
                 de ser regular*/
                 if (is_regular_file(full_path)) {
-                    /* Si es txt haz algo */
+                    if (is_txt(full_path)) {
+                        int n, path_len;
+                        if (read(sorter_queue, &n, sizeof(int)) == -1) {
+                            free(full_path);
+                            continue;
+                        }
+
+                        path_len = strlen(full_path);
+                        if (write(to_sorter[n], &path_len, sizeof(int)) == -1) {
+                            free(full_path);
+                            continue;
+                        }
+                        
+                        if (write(to_sorter[n], full_path, path_len+1) != path_len+1) {
+                            free(full_path);
+                            continue;
+                        }
+                    }
                 }
             }
             free(full_path);
@@ -173,4 +186,19 @@ int is_directory(char *path) {
     if (stat(path, &st) != 0) return -1;
 
     return S_ISDIR(st.st_mode);
+}
+
+/**
+ * Verifica si un archivo es regular.
+ *
+ * @param path: String con la ruta del archivo a verificar.
+ * @return 1 si es un archivo regular.
+ *     0 en caso contrario.
+ *     -1 en caso de error.
+ */
+int is_regular_file(char *path) {
+    struct stat st;
+    if (stat(path, &st) != 0) return -1;
+
+    return S_ISREG(st.st_mode);
 }

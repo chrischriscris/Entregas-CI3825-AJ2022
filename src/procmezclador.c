@@ -25,6 +25,7 @@
 void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
     int i, size;
     Sequence *local_seq = Sequence_new(0);
+    if (!local_seq) exit(1);
 
     for (;;) {
         Sequence *arriving_seq, *temp;
@@ -56,9 +57,6 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
             free(arriving_seq);
             continue;
         }
-
-        Sequence_destroy(local_seq);
-        Sequence_destroy(arriving_seq);
         local_seq = temp;
     }
     close(from_sorter);
