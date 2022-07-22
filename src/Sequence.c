@@ -1,6 +1,9 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "Sequence.h"
+
+#define INFINITE 9223372036854775807
 
 /**
  * Asigna memoria e inicializa una secuencia con una capacidad
@@ -126,6 +129,59 @@ Sequence *Sequence_merge(Sequence *seq1, Sequence *seq2) {
     }
 
     return sequence;
+}
+
+/**
+ * 
+ * 
+ * @param seq_arr 
+ * @param n 
+ * @param path 
+ * @return int 
+ */
+int Sequence_write_merged(Sequence **seq_arr, int n, char *path) {
+    FILE *fp;
+    int i, *index, index_total = 0, first = 1;
+
+    /* Crea un arreglo para mantener los índices de cada secuencia */
+    if (!(index = malloc(sizeof(int) * n))) return -1;
+    for (i=0; i<n; i++) index[i] = 0;
+    
+    /* Busca el total de números a escribir */
+    for (i = 0; i < n; i++) index_total += seq_arr[i]->size;
+    
+    /* Escribe en la salida, viendo el menor de los enteros de las secuencias */
+    if (!(fp = fopen(path, "w"))) return -1;
+    for (;;) {
+        int i, min_index = 0;
+        int64_t min = INFINITE;
+
+        /* Verifica si todas las secuencias ya fueron escritas */
+        if (!index_total) break;
+
+        /* Busca el menor entero entre las secuencias */
+        for (i = 0; i < n; i++) {
+            if (index[i] < seq_arr[i]->size && seq_arr[i]->arr[index[i]] < min) {
+                min = seq_arr[i]->arr[index[i]];
+                min_index = i;
+            }
+        }
+
+        /* Escribe el menor de los enteros de las secuencias */
+        if (first) {
+            first = 0;
+            fprintf(fp, "%ld", min);
+        } else {
+            fprintf(fp, "\n%ld", min);
+        }
+
+        index[min_index]++;
+        index_total--;
+    }
+
+    free(index);
+    fclose(fp);
+    return 0;
 }
 
 /**
