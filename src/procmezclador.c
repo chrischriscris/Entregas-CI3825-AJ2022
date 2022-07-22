@@ -23,6 +23,7 @@
  */
 void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
     int i, size;
+    int64_t *arr;
     Sequence *local_seq = Sequence_new(0);
     if (!local_seq) exit(1);
 
@@ -58,14 +59,16 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
     close(merger_queue);
 
     /* Pasa la secuencia al escritor */
+
     size = local_seq->size;
     if (write(to_writer, &size, sizeof(int)) == -1) {
         Sequence_destroy(local_seq);
         exit(1);
     };
 
+    arr = local_seq->arr;
     for (i=0; i<size; i++) {
-        if (write(to_writer, local_seq->arr + i, sizeof(int64_t)) != sizeof(int64_t)) {
+        if (write(to_writer, &arr[i], sizeof(int64_t)) != sizeof(int64_t)) {
             continue;
         }
     }

@@ -39,8 +39,10 @@ void do_writer_work(int nm, int from_reader, int *from_merger, char *path) {
         if (!seqs_arr[i]) continue;
 
         for (j=0; j<seq_size; j++) {
-            if (read(from_merger[m], &seqs_arr[j]->arr + j, sizeof(int64_t)) != sizeof(int64_t))
+            int64_t el;
+            if (read(from_merger[m], &el, sizeof(int64_t)) != sizeof(int64_t))
                 continue;
+            Sequence_insert(seqs_arr[i], el);
         }
     }
 

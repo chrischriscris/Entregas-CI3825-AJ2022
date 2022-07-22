@@ -190,7 +190,8 @@ int main(int argc, char *argv[]) {
             close(reader_sorter[j][WRITE_END]);
             free(reader_sorter[j]);
         }
-        free(sorter_merger);
+        free(reader_sorter);
+        
         for (j=0; j<nm; j++) {
             close(sorter_merger[j][READ_END]);
             close(sorter_merger[j][WRITE_END]);
@@ -269,6 +270,7 @@ int main(int argc, char *argv[]) {
     close(merger_queue[READ_END]);
     close(reader_writer[WRITE_END]);
 
+    pid = 0;
     for (i=0; i<nm+ns+1; i++) {
         int status;
         pid = wait(&status);
@@ -276,6 +278,6 @@ int main(int argc, char *argv[]) {
         if (status) fprintf(stderr, "Error en el proceso %d\n", pid);
     }
 
-    printf("Terminó el padre\n");
+    if (pid) return 1;
     return 0;
 }

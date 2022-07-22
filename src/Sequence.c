@@ -188,22 +188,27 @@ int Sequence_write_merged(Sequence **seq_arr, int n, char *path) {
         n_total += seq_arr[i]->size;
         index[i] = 0;
     }
-    
+
     /* Por cada iteración busca la menor cabeza y la escribe */
     if (!(fp = fopen(path, "w"))) return 0;
     for (i=0; i<n_total; i++) {
         int j;
-        int64_t min = LONG_MAX;
+        int64_t min = LONG_MAX, min_i;
 
         /* Halla la menor cabeza de arreglo */
         for (j=0; j<n; j++) {
             int k = index[j];
 
             /* Si no se ha llegado al final del j-ésimo arreglo */
-            if (k < seq_arr[j]->size)
-                if (seq_arr[j]->arr[k] < min)
-                    min = seq_arr[i]->arr[k];
+            if (k < seq_arr[j]->size) {
+                /* Si la cabeza es menor que el mínimo actual, se actualiza */
+                if (seq_arr[j]->arr[k] < min) {
+                    min = seq_arr[j]->arr[k];
+                    min_i = j;
+                }
+            }
         }
+        index[min_i]++;
 
         /* Escribe el menor hallado */
         fprintf(fp, i == 0 ? "%ld" : "\n%ld", min);

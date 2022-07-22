@@ -79,9 +79,8 @@ void do_sorter_work(
         }
 
         for (i=0; i<seq->size; i++) {
-            if (write(to_merger[m], seq->arr + i, sizeof(int64_t)) != sizeof(int64_t)) {
+            if (write(to_merger[m], seq->arr + i, sizeof(int64_t)) != sizeof(int64_t))
                 continue;
-            }
         }
 
         Sequence_destroy(seq);
