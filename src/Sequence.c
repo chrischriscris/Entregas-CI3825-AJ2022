@@ -215,6 +215,20 @@ int Sequence_write_merged(Sequence **seq_arr, int n, char *path) {
 }
 
 /**
+ * Imprime los elementos de la secuencia.
+ * 
+ * @param seq Apuntador a la secuencia.
+ */
+void Sequence_print(Sequence *seq) {
+    int i;
+    printf("[");
+    for (i=0; i<seq->used; i++) {
+        printf(i == 0 ? "%ld" : ", %ld", seq->arr[i]);
+    }
+    printf("]\n");
+}
+
+/**
  * Libera la memoria asignada a la secuencia pasada como argumento.
  * 
  * @param seq Apuntador a la secuencia.

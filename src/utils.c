@@ -84,6 +84,7 @@ int walk_dir_tree_proc(char *root, int sorter_queue, int *to_sorter) {
         } else {
             char *full_path = malloc(sizeof(char) *
                 (strlen(root) + strlen(d_name) + 2));
+            
             int is_dir;
 
             /* Construye la ruta completa */
@@ -118,7 +119,7 @@ int walk_dir_tree_proc(char *root, int sorter_queue, int *to_sorter) {
                             continue;
                         }
                         
-                        if (write(to_sorter[n], full_path, path_len+1) != path_len+1) {
+                        if (write(to_sorter[n], full_path, path_len) != path_len+1) {
                             free(full_path);
                             continue;
                         }

@@ -58,7 +58,7 @@ void do_sorter_work(
         /* Procede a leer y ordenar los datos del archivo */
         seq = extract_sequence_from_file(path);
         if (!seq) {
-            fprintf(stderr, "Error al extraer secuecia del archivo %s\n", path);
+            fprintf(stderr, "Error al extraer secuencia del archivo %s\n", path);
             free(path);
             continue;
         }
@@ -83,6 +83,7 @@ void do_sorter_work(
                 continue;
             }
         }
+
         Sequence_destroy(seq);
     }
 

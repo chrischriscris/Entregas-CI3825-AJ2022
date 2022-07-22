@@ -22,6 +22,7 @@ int Sequence_shrink(Sequence *seq);
 void Sequence_sort(Sequence *seq);
 int Sequence_merge(Sequence **seq1, Sequence *seq2);
 int Sequence_write_merged(Sequence **seq_arr, int n, char *path);
+void Sequence_print(Sequence *seq);
 void Sequence_destroy(Sequence *seq);
 
 #endif
