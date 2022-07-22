@@ -194,7 +194,7 @@ int main(int argc, char *argv[]) {
             free(reader_sorter[j]);
         }
         free(sorter_merger);
-        for (j=0; j<ns; j++) {
+        for (j=0; j<nm; j++) {
             close(sorter_merger[j][READ_END]);
             close(sorter_merger[j][WRITE_END]);
             free(sorter_merger[j]);
@@ -206,8 +206,8 @@ int main(int argc, char *argv[]) {
         /* Aborta el proceso si no puede obtener memoria */
         from_merger = safe_malloc(sizeof(int) * nm);
         for (j=0; j<nm; j++) {
-            from_merger[j] = merger_writer[j][WRITE_END];
-            close(sorter_merger[j][READ_END]);
+            from_merger[j] = merger_writer[j][READ_END];
+            close(merger_writer[j][WRITE_END]);
         }
 
         do_writer_work(nm, reader_writer[READ_END], from_merger);

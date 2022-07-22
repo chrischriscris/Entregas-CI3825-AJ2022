@@ -59,7 +59,7 @@ void do_sorter_work(
         /* Procede a leer y ordenar los datos del archivo */
         seq = extract_sequence_from_file(path);
         if (!seq) {
-            fprintf(stderr, "Error al leer archivo %s\n", path);
+            fprintf(stderr, "Error al extraer secuecia del archivo %s\n", path);
             free(path);
             continue;
         }
@@ -76,9 +76,15 @@ void do_sorter_work(
         }
 
         /* Encola el tamaño y la secuencia y luego la secuencia */
-        write(to_merger[m], &seq->size, sizeof(int));
+        if (write(to_merger[m], &seq->size, sizeof(int)) == -1) {
+            Sequence_destroy(seq);
+            continue;
+        }
+
         for (i=0; i<seq->size; i++) {
-            write(to_merger[m], seq->arr + i, sizeof(int64_t));
+            if (write(to_merger[m], seq->arr + i, sizeof(int64_t)) != sizeof(int64_t)) {
+                continue;
+            }
         }
         Sequence_destroy(seq);
     }

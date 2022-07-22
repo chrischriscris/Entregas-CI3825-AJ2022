@@ -23,7 +23,7 @@
  *     escritor.
  */
 void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
-    int i;
+    int i, size;
     Sequence *local_seq = Sequence_new(0);
 
     for (;;) {
@@ -65,8 +65,18 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
     close(merger_queue);
 
     /* Pasa la secuencia al escritor */
-    write(to_writer, &local_seq->size, sizeof(int));
-    for (i=0; i<local_seq->size; i++) write(to_writer, local_seq->arr + i, sizeof(int64_t));
+    size = local_seq->size;
+    if (write(to_writer, &size, sizeof(int)) == -1) {
+        Sequence_destroy(local_seq);
+        exit(1);
+    };
 
+    for (i=0; i<size; i++) {
+        if (write(to_writer, local_seq->arr + i, sizeof(int64_t)) != sizeof(int64_t)) {
+            continue;
+        }
+    }
+
+    Sequence_destroy(local_seq);
     close(to_writer);
 }
