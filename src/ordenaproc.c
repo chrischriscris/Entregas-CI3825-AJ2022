@@ -124,10 +124,8 @@ int main(int argc, char *argv[]) {
     /* ================ MEZCLADORES ================ */
     for (i=0; i<nm; i++) {
         if ((pid = fork()) == 0) {
-            int j;
-
-            printf("Mezclador %d creado\n", i);
             /* Proceso hijo de Lector */
+            int j;
 
             /* Cierra las pipes destinadas a los demás mezcladores */
             for (j=0; j<nm; j++) {
@@ -164,7 +162,6 @@ int main(int argc, char *argv[]) {
 
             free(sorter_merger);
             free(merger_writer);
-            printf("Ordenador terminado\n");
             exit(0);
         } else if (pid > 0) {
             merger_count++;
@@ -211,8 +208,6 @@ int main(int argc, char *argv[]) {
         }
 
         do_writer_work(nm, reader_writer[READ_END], from_merger, outfile);
-
-        printf("A punto de morir\n");
         exit(0);
     } else if (pid < 0) {
         fprintf(stderr, "No se pudo crear el escritor, terminando programa\n");
@@ -245,8 +240,9 @@ int main(int argc, char *argv[]) {
     free(sorter_merger);
     free(merger_writer);
 
-    /* Pasarle a los ordenadores los archivos */
-    walk_dir_tree(root, sorter_queue[READ_END], to_sorter);
+    /* Recorre el árbol de directorios enviándole a los ordenadores
+    los archivos */
+    walk_dir_tree_proc(root, sorter_queue[READ_END], to_sorter);
 
     /* Espera que vayan terminando los ordenadores */
     for (i=0; i<ns; i++) {
@@ -279,6 +275,7 @@ int main(int argc, char *argv[]) {
 
         if (status) fprintf(stderr, "Error en el proceso %d\n", pid);
     }
+
     printf("Terminó el padre\n");
     return 0;
 }

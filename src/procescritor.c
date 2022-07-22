@@ -30,8 +30,7 @@ void do_writer_work(int nm, int from_reader, int *from_merger, char *path) {
         /* Lee el mezclador asignado */
         n_read = read(from_reader, &m, sizeof(int));
         if (n_read == -1) continue;
-        printf("Mezclador %d recibe mezclador %d\n", i, m);
-        
+
         /* Lee el tamaño de la secuencia */
         read(from_merger[m], &seq_size, sizeof(int));
 

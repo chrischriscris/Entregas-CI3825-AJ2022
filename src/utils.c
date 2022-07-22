@@ -67,7 +67,7 @@ int **initialize_pipes(int n) {
  * @return 0 en caso de exito.
  *     -1 en caso de error.
  */
-int walk_dir_tree(char *root, int sorter_queue, int *to_sorter) {
+int walk_dir_tree_proc(char *root, int sorter_queue, int *to_sorter) {
     struct dirent *entry;
 
     /* Abre el directorio */
@@ -97,7 +97,7 @@ int walk_dir_tree(char *root, int sorter_queue, int *to_sorter) {
 
             if (is_dir) {
                 /* Si es directorio, se explora recursivamente */
-                if (walk_dir_tree(full_path, sorter_queue, to_sorter) == -1) {
+                if (walk_dir_tree_proc(full_path, sorter_queue, to_sorter) == -1) {
                     free(full_path);
                     continue;
                 }
