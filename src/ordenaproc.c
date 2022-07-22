@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
             }
         }
     }
-    
+
     /* Crean las pipes a usar por los mezcladores */
     if (pipe(reader_writer) == -1) {
         perror("Error al crear pipe\n");
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
             /* Proceso hijo de Lector */
 
             /* Cierra las pipes destinadas a los demás mezcladores */
-            for (j=0; j<ns; j++) {
+            for (j=0; j<nm; j++) {
                 if (i==j) continue;
                 close(sorter_merger[j][READ_END]);
                 close(sorter_merger[j][WRITE_END]);

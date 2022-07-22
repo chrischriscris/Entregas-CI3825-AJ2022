@@ -27,18 +27,19 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
     Sequence *local_seq = Sequence_new(0);
 
     for (;;) {
-        Sequence *arriving_seq;
+        Sequence *arriving_seq, *temp;
 
         int n_read;
-        size_t arriving_seq_size;
+        int arriving_seq_size;
+
         /* Se encola como disponible */
-        write(merger_queue, &n, sizeof(int));
+        if (write(merger_queue, &n, sizeof(int)) == -1) continue;
 
         /* Lee tamaño de la secuencia */
-        n_read = read(from_sorter, &arriving_seq_size, sizeof(size_t));
+        n_read = read(from_sorter, &arriving_seq_size, sizeof(int));
+        if (n_read == -1) continue;
         if (n_read == 0) break;
 
-        printf("Mezclador %d mezclando %ld enteros\n", n, arriving_seq_size);
         arriving_seq = Sequence_new(arriving_seq_size);
         if (!arriving_seq) continue;
 
@@ -47,16 +48,25 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
             int64_t m;
             read(from_sorter, &m, sizeof(int64_t));
             Sequence_insert(arriving_seq, m);
-            printf("%ld  ", m);
         }
-        printf("\n");
 
-        /* Combinar con la propia */
-        sleep(2);
+        /* Mezcla la secuencia */
+        temp = Sequence_merge(local_seq, arriving_seq);
+        if (!temp) {
+            free(arriving_seq);
+            continue;
+        }
+
+        Sequence_destroy(local_seq);
+        Sequence_destroy(arriving_seq);
+        local_seq = temp;
     }
+    close(from_sorter);
     close(merger_queue);
 
     /* Pasa la secuencia al escritor */
     write(to_writer, &local_seq->size, sizeof(int));
     for (i=0; i<local_seq->size; i++) write(to_writer, local_seq->arr + i, sizeof(int64_t));
+
+    close(to_writer);
 }

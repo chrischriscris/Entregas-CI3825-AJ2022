@@ -11,11 +11,11 @@
  */
 typedef struct {
   int64_t *arr; /* Apuntador a arreglo interno */
-  size_t used;    /* Cantidad de elementos en uso */
-  size_t size;    /* Tamaño total del arreglo */
+  int used;    /* Cantidad de elementos en uso */
+  int size;    /* Tamaño total del arreglo */
 } Sequence;
 
-Sequence *Sequence_new(size_t n);
+Sequence *Sequence_new(int n);
 int Sequence_insert(Sequence *seq, int64_t el);
 int Sequence_shrink(Sequence *seq);
 void Sequence_sort(Sequence *seq);

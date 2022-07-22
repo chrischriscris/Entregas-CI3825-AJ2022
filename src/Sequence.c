@@ -12,7 +12,7 @@
  * @return Apuntador a la secuencia.
  *     NULL en caso de algún error.
  */
-Sequence *Sequence_new(size_t n) {
+Sequence *Sequence_new(int n) {
     Sequence *seq = malloc(sizeof(Sequence));
     if (!seq) return NULL;
 
@@ -83,6 +83,49 @@ void Sequence_sort(Sequence *seq) {
             }
         }
     }
+}
+
+/**
+ * @
+ * 
+ * @param seq1 
+ * @param seq2 
+ * @return Sequence* 
+ */
+Sequence *Sequence_merge(Sequence *seq1, Sequence *seq2) {
+    int i, j, k;
+    int n = seq1->size, m = seq2->size;
+    int k = n + m;
+    int64_t *secuencia1 = seq1->arr, *secuencia2 = seq2->arr;
+
+    /* Crea la nueva secuencia */
+    Sequence *sequence = create_sequence(k);
+    if (sequence == NULL) return NULL;
+
+    /* Mezcla las secuencias */
+    for (i = 0, j = 0, k = 0; i < k; i++) {
+
+        /* Si ambas secuencias no están vacías, revisa cuál de los dos tiene el menor */
+        if (j < n && k < m) {
+            if (secuencia1[j] < secuencia2[k]) {
+                sequence->arr[i] = secuencia1[j];
+                j++;
+            } else {
+                sequence->arr[i] = secuencia2[k];
+                k++;
+            }
+        } else if (j < n) {
+            /* Si la secuencia 2 ya está vacía, se copia el resto de la 1 */
+            sequence->arr[i] = secuencia1[j];
+            j++;
+        } else {
+            /* Si la secuencia 1 ya está vacía, se copia el resto de la 2 */
+            sequence->arr[i] = secuencia2[k];
+            k++;
+        }
+    }
+
+    return sequence;
 }
 
 /**

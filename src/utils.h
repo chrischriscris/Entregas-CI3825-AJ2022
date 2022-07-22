@@ -7,5 +7,6 @@
 void *safe_malloc(size_t n);
 int **initialize_pipes(int n);
 Sequence *extract_sequence_from_file(char *path);
+int walk_dir_tree(char *root);
 
 #endif

@@ -37,11 +37,12 @@ void do_sorter_work(
         char *path;
 
         /* Se encola como disponible */
-        write(sorter_queue, &n, sizeof(int));
+        if (write(sorter_queue, &n, sizeof(int)) == -1) continue;;
 
         /* Espera a que le manden un archivo, si no lee nada significa
         que cerraron los extremos y sale del ciclo */
         n_read = read(from_reader, &path_size, sizeof(int));
+        if (n_read == -1) continue;
         if (!n_read) break;
 
         /* Guarda el filename */
@@ -56,7 +57,6 @@ void do_sorter_work(
         }
 
         /* Procede a leer y ordenar los datos del archivo */
-        printf("Ordenador %d ordenando %s\n", n, path);
         seq = extract_sequence_from_file(path);
         if (!seq) {
             fprintf(stderr, "Error al leer archivo %s\n", path);
@@ -72,11 +72,11 @@ void do_sorter_work(
         n_read = read(merger_queue, &m, sizeof(int));
         if (!n_read) {
             Sequence_destroy(seq);
-            exit(1);
+            continue;
         }
 
         /* Encola el tamaño y la secuencia y luego la secuencia */
-        write(to_merger[m], &seq->size, sizeof(size_t));
+        write(to_merger[m], &seq->size, sizeof(int));
         for (i=0; i<seq->size; i++) {
             write(to_merger[m], seq->arr + i, sizeof(int64_t));
         }
@@ -87,5 +87,7 @@ void do_sorter_work(
     la memoria */
     for (i=0; i<nm; i++) close(to_merger[i]);
     free(to_merger);
+    close(from_reader);
+    close(sorter_queue);
     close(merger_queue);
 }
