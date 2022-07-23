@@ -5,8 +5,7 @@ plan.txt
 ordenaproc
 ordenahilo
 valgrind-command.txt
-valgrind-out.txt
-src/out.txt
+*out.txt
 
 # Directorios
 home
