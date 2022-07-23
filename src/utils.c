@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 
 #include "utils.h"
 #include "Sequence.h"
