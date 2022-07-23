@@ -34,7 +34,7 @@ Sequence *Sequence_new(int n) {
  * @return Apuntador a la secuencia, su memoria debe ser liberada.
  *     NULL en caso de algún error.
  */
-Sequence *extract_sequence_from_file(char *path) {
+Sequence *Sequence_extract_from_file(char *path) {
     Sequence *seq;
     int64_t n;
     FILE *fp;

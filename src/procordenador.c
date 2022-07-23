@@ -1,10 +1,5 @@
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <stdio.h>
-#include <sys/wait.h>
-#include <string.h>
+#include <unistd.h>
 #include <stdlib.h>
 
 #include "procordenador.h"
@@ -55,7 +50,7 @@ void do_sorter_work(
         }
 
         /* Procede a leer y ordenar los datos del archivo */
-        seq = extract_sequence_from_file(path);
+        seq = Sequence_extract_from_file(path);
         if (!seq) {
             fprintf(stderr, "Error al extraer secuencia del archivo %s\n", path);
             free(path);

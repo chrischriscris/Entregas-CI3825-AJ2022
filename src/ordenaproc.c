@@ -1,11 +1,7 @@
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <stdio.h>
-#include <sys/wait.h>
-#include <string.h>
+#include <unistd.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 
 #include "utils.h"
 #include "procordenador.h"
