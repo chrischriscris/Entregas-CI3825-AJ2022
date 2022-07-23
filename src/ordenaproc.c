@@ -44,6 +44,12 @@ int main(int argc, char *argv[]) {
     nm = atoi(argv[2]);
     root = argv[3];
     outfile = argv[4];
+    if (!ns || !nm) {
+        fprintf(stderr,
+            "El número de ordenadores y el número de mezcladores deben ser enteros positivos\n"
+        );
+        return 1;
+    }
 
     /* Crea los pipes a usar por los ordenadores */
     if (pipe(sorter_queue) == -1) {
@@ -80,7 +86,9 @@ int main(int argc, char *argv[]) {
             for (j=0; j<nm; j++) {
                 to_merger[j] = sorter_merger[j][WRITE_END];
                 close(sorter_merger[j][READ_END]);
+                free(sorter_merger[j]);
             }
+            free(sorter_merger);
 
             /* Cierra los extremos que no voy a usar de las demás pipes */
             close(sorter_queue[READ_END]);
@@ -94,12 +102,14 @@ int main(int argc, char *argv[]) {
                 reader_sorter[i][READ_END], to_merger
             );
 
+            free(reader_sorter[i]);
             free(reader_sorter);
             exit(0);
         } else if (pid > 0) {
             sorter_count++;
         } else {
             perror("Error al crear lector");
+
             /* Termina el proceso principal solo si no hay por lo menos
             un lector al terminar de crearlos todos */
             if (i == ns-1 && !sorter_count) {
@@ -156,8 +166,10 @@ int main(int argc, char *argv[]) {
                 merger_writer[i][WRITE_END]
             );
 
-            free(sorter_merger);
+            free(merger_writer[i]);
+            free(sorter_merger[i]);
             free(merger_writer);
+            free(sorter_merger);
             exit(0);
         } else if (pid > 0) {
             merger_count++;
@@ -205,6 +217,9 @@ int main(int argc, char *argv[]) {
         }
 
         do_writer_work(nm, reader_writer[READ_END], from_merger, outfile);
+
+        for (j=0; j<nm; j++) free(merger_writer[j]);
+        free(merger_writer);
         exit(0);
     } else if (pid < 0) {
         fprintf(stderr, "No se pudo crear el escritor, terminando programa\n");
@@ -240,6 +255,7 @@ int main(int argc, char *argv[]) {
     /* Recorre el árbol de directorios enviándole a los ordenadores
     los archivos */
     walk_dir_tree_proc(root, sorter_queue[READ_END], to_sorter);
+    free(to_sorter);
 
     /* Espera que vayan terminando los ordenadores */
     for (i=0; i<ns; i++) {

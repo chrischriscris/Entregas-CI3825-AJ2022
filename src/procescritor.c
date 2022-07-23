@@ -48,5 +48,6 @@ void do_writer_work(int nm, int from_reader, int *from_merger, char *path) {
     }
     free(seqs_arr);
 
+    free(from_merger);
     close(from_reader);
 }
