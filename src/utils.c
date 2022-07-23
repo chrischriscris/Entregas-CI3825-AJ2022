@@ -3,8 +3,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <dirent.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 #include "utils.h"
 #include "Sequence.h"
@@ -113,13 +113,13 @@ int walk_dir_tree_proc(char *root, int sorter_queue, int *to_sorter) {
                             continue;
                         }
 
-                        path_len = strlen(full_path);
+                        path_len = strlen(full_path) + 1;
                         if (write(to_sorter[n], &path_len, sizeof(int)) == -1) {
                             free(full_path);
                             continue;
                         }
-                        
-                        if (write(to_sorter[n], full_path, path_len) != path_len+1) {
+
+                        if (write(to_sorter[n], full_path, path_len) != path_len) {
                             free(full_path);
                             continue;
                         }

@@ -143,12 +143,17 @@ int Sequence_merge(Sequence **seq1, Sequence *seq2) {
     int n = (*seq1)->size, m = seq2->size;
     int i, j;
 
+    printf("seq1: ");
+    Sequence_print(*seq1);
+    printf("seq2: ");
+    Sequence_print(seq2);
+
     /* Crea la nueva secuencia */
     Sequence *merged_seq = Sequence_new(n+m);
     if (!merged_seq) return 0;
 
     /* Mezcla las secuencias, se usa el hecho de que ambas están ordenadas */
-    for (i=0, j=0; i<n && j<m; i++) {
+    for (i=0, j=0; i<n && j<m;) {
         if (arr1[i] < arr2[j]) Sequence_insert(merged_seq, arr1[i++]);
         else Sequence_insert(merged_seq, arr2[j++]);
     }
@@ -163,6 +168,8 @@ int Sequence_merge(Sequence **seq1, Sequence *seq2) {
     Sequence_destroy(seq2);
     *seq1 = merged_seq;
 
+    printf("merged_seq:\n");
+    Sequence_print(merged_seq);
     return 1;
 }
 

@@ -50,10 +50,15 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
             read(from_sorter, &m, sizeof(int64_t));
             Sequence_insert(arriving_seq, m);
         }
-
+        
         /* Mezcla la secuencia con la local */
         if (!Sequence_merge(&local_seq, arriving_seq))
-            fprintf(stderr, "Error al mezclar una secuencia\n");
+            fprintf(stderr, "Error al mezclar claeruna secuencia\n");
+
+        /*
+        printf("Después de mezclar:\n");
+        Sequence_print(local_seq);
+        */
     }
     close(from_sorter);
     close(merger_queue);

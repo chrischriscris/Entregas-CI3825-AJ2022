@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     char *root, *outfile;
     int sorter_count, merger_count, *to_sorter;
 
-    /* Mecanismos de comunicación */
+    /* Declara los mecanismos de comunicación */
 
     /* Ordenadores - Lector */
     int sorter_queue[2]; 

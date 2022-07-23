@@ -36,7 +36,7 @@ void do_sorter_work(
         char *path;
 
         /* Se encola como disponible */
-        if (write(sorter_queue, &n, sizeof(int)) == -1) continue;;
+        if (write(sorter_queue, &n, sizeof(int)) == -1) continue;
 
         /* Espera a que le manden un archivo, si no lee nada significa
         que cerraron los extremos y sale del ciclo */
@@ -44,13 +44,12 @@ void do_sorter_work(
         if (n_read == -1) continue;
         if (!n_read) break;
 
-        /* Guarda el filename */
+        /* Guarda el path */
         path = malloc(path_len);
 
         /* Pasa al siguiente archivo si no puede guardar el filename */
         if (!path) continue;
-        n_read = read(from_reader, path, path_len);
-        if (n_read != path_len) {
+        if (read(from_reader, path, path_len) != path_len) {
             free(path);
             continue;
         }
@@ -65,14 +64,13 @@ void do_sorter_work(
         free(path);
         Sequence_sort(seq);
 
-        /* Al terminar, espera algún mezclador desoculpado */
-        n_read = read(merger_queue, &m, sizeof(int));
-        if (!n_read) {
+        /* Al terminar, espera algún mezclador desocupado */
+        if (!read(merger_queue, &m, sizeof(int))) {
             Sequence_destroy(seq);
             continue;
         }
 
-        /* Encola el tamaño y la secuencia y luego la secuencia */
+        /* Encola el tamaño de la secuencia y luego la secuencia */
         if (write(to_merger[m], &seq->size, sizeof(int)) == -1) {
             Sequence_destroy(seq);
             continue;
