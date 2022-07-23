@@ -6,7 +6,7 @@ ordenaproc
 ordenahilo
 valgrind-command.txt
 valgrind-out.txt
-out.txt
+src/out.txt
 
 # Directorios
 home

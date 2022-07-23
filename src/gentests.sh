@@ -21,7 +21,7 @@ do
 
         for (( j = 0 ; j < $2 ; j++ ))
         do
-            randint=$(( $RANDOM % 10000 - 5000 ))
+            randint=$(( $RANDOM - 16384 ))
             if [ $j -eq 0 ]
             then
                 printf %d "$randint" >> $file
