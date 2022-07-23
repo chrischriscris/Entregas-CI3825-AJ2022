@@ -6,11 +6,13 @@ ordenaproc
 ordenahilo
 valgrind-command.txt
 valgrind-out.txt
+out.txt
 
 # Directorios
 home
 entrega
 src_pdf
+testdir*
 
 # Prerequisites
 *.d
