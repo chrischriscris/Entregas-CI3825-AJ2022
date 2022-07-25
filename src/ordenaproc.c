@@ -32,7 +32,6 @@ int main(int argc, char *argv[]) {
     /* Lector - Escritor */
     int reader_writer[2];
 
-    /* Mezcladores disponibles */
     /* Valida los argumentos de línea de comandos */
     if (argc != 5) {
         fprintf(stderr, "Uso: %s <num Ordenadores> <num Mezcladores> <raiz> <archivo salida>\n", argv[0]);
@@ -111,7 +110,7 @@ int main(int argc, char *argv[]) {
             perror("Error al crear lector");
 
             /* Termina el proceso principal solo si no hay por lo menos
-            un lector al terminar de crearlos todos */
+            un ordenador al terminar de crearlos todos */
             if (i == ns-1 && !sorter_count) {
                 fprintf(stderr, "No se pudo crear ningún ordenador, terminando programa\n");
                 exit(1);
@@ -254,7 +253,11 @@ int main(int argc, char *argv[]) {
 
     /* Recorre el árbol de directorios enviándole a los ordenadores
     los archivos */
-    walk_dir_tree_proc(root, sorter_queue[READ_END], to_sorter);
+    walk_dir_tree(
+        root,
+        sorter_queue[READ_END], to_sorter,
+        NULL, NULL, NULL, 1
+    );
     free(to_sorter);
 
     /* Espera que vayan terminando los ordenadores */

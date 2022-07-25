@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "Sequence.h"
+#include "sequence.h"
 
 #define LONG_MAX 9223372036854775807
 

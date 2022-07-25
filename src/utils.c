@@ -4,9 +4,10 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <pthread.h>
 
 #include "utils.h"
-#include "Sequence.h"
+#include "sequence.h"
 
 /**
  * 
@@ -66,7 +67,12 @@ int **initialize_pipes(int n) {
  * @return 0 en caso de exito.
  *     -1 en caso de error.
  */
-int walk_dir_tree_proc(char *root, int sorter_queue, int *to_sorter) {
+int walk_dir_tree(
+    char *root,
+    int sorter_queue, int *to_sorter,
+    char **global_path, pthread_mutex_t *mutex, pthread_cond_t *cond,
+    int is_process
+) {
     struct dirent *entry;
 
     /* Abre el directorio */
@@ -97,15 +103,19 @@ int walk_dir_tree_proc(char *root, int sorter_queue, int *to_sorter) {
 
             if (is_dir) {
                 /* Si es directorio, se explora recursivamente */
-                if (walk_dir_tree_proc(full_path, sorter_queue, to_sorter) == -1) {
+                if (walk_dir_tree(full_path,
+                        sorter_queue, to_sorter,
+                        global_path, mutex, cond,
+                        is_process) == -1
+                ) {
                     free(full_path);
                     continue;
                 }
             } else {
                 /* De lo contrario, se hace una operación sobre el archivo,
                 de ser regular*/
-                if (is_regular_file(full_path)) {
-                    if (is_txt_file(full_path)) {
+                if (is_regular_file(full_path) && is_txt_file(full_path)) {
+                    if (is_process) {
                         int n, path_len;
                         if (read(sorter_queue, &n, sizeof(int)) == -1) {
                             free(full_path);
@@ -122,10 +132,26 @@ int walk_dir_tree_proc(char *root, int sorter_queue, int *to_sorter) {
                             free(full_path);
                             continue;
                         }
+                    } else {
+                        /* -------- Región crítica -------- */
+                        pthread_mutex_lock(mutex);
+
+                        /* Modifica la variable global y levanta a un solo
+                        hilo que esté esperando */
+                        *global_path = full_path;
+                        pthread_cond_signal(cond);
+
+                        /* Se suspende hasta que alguien tome el path de la
+                        variable global */
+                        while (*global_path) pthread_cond_wait(cond, mutex);
+
+                        pthread_mutex_unlock(mutex);
+                        /* ------ Fin región crítica ------ */
                     }
                 }
             }
-            free(full_path);
+            /* Si son hilos, el hilo que  */
+            if (is_process) free(full_path);
         }
     }
     closedir(dir);

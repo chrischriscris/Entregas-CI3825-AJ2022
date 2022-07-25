@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "procescritor.h"
-#include "Sequence.h"
+#include "sequence.h"
 
 /**
  * Hace el trabajo del escritor.

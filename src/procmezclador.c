@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "procmezclador.h"
-#include "Sequence.h"
+#include "sequence.h"
 
 /**
  * Hace el trabajo del mezclador.
@@ -54,7 +54,6 @@ void do_merger_work(int n, int merger_queue, int from_sorter,  int to_writer) {
     close(merger_queue);
 
     /* Pasa la secuencia al escritor */
-
     size = local_seq->size;
     if (write(to_writer, &size, sizeof(int)) == -1) {
         Sequence_destroy(local_seq);

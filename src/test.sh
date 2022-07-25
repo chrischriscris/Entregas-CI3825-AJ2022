@@ -22,6 +22,6 @@ done
 
 sort -g -o expected_out.txt expected_out.txt
 
-ordenaproc $2 $3 $1 out.txt
+./ordenaproc $2 $3 $1 out.txt
 diff expected_out.txt out.txt -w -q
 rm expected_out.txt
