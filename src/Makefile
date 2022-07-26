@@ -1,7 +1,7 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic -ggdb3 -pthread
+CFLAGS = -ansi -Wall -pedantic -g
 
-all: ordenaproc ordenahilo
+all: ordenaproc ordenahilo ordena
 
 # Proceso
 
@@ -20,7 +20,7 @@ procescritor.o: procescritor.c
 # Hilo
 
 ordenahilo: ordenahilo.c utils.o
-	$(CC) $(CFLAGS) -o ordenahilo ordenahilo.c sequence.o utils.o
+	$(CC) $(CFLAGS) -pthread -o ordenahilo ordenahilo.c sequence.o utils.o
 
 # hiloordenador.o: hiloordenador.c
 # 	$(CC) $(CFLAGS) -c hiloordenador.c
@@ -32,6 +32,9 @@ ordenahilo: ordenahilo.c utils.o
 # 	$(CC) $(CFLAGS) -c hiloescritor.c
 
 # General
+
+ordena: ordena.c
+	$(CC) $(CFLAGS) -pthread -o ordena ordena.c sequence.o utils.o
 
 utils.o: utils.c sequence.o
 	$(CC) $(CFLAGS) -c utils.c

@@ -10,13 +10,11 @@
 
 /* Declara los mecanismos de comunicación (memoria compartida) */
 
-/* Donde el lector pasa nombres de archivo al ordenador */
+/* Lector - Ordenador */
 char *global_path;
 
-/* Donde el ordenador pasa secuencias a un mezclador libre */
+/* Ordenador - Mezclador */
 Sequence **global_seqs;
-
-/* Contador de mezcladores libres */
 int free_mergers = 0;
 
 /* QUITAR */
@@ -29,7 +27,7 @@ int last_step = 0;
 /* Donde el mezclador pasa secuencias al escritor */
 Sequence *writer_seq;
 
-/* Inicializa los semáforos y mutex y variables de condición a usar */
+/* Inicializa los mutex y variables de condición a usar */
 pthread_mutex_t path_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sorter_merger_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t merger_writer_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -112,7 +110,10 @@ int main(int argc, char *argv[]) {
 
     /* -------- Región crítica -------- */
     pthread_mutex_lock(&path_mutex);
-    
+
+    /* Espera que se agarre el último archivo pasado */
+    while (global_path) pthread_cond_wait(&path_available, &path_mutex);
+
     /* Avisa que no hay más archivos que pasar */
     global_path = (char *) -1;
     pthread_cond_broadcast(&path_available);
@@ -125,7 +126,7 @@ int main(int argc, char *argv[]) {
         if (pthread_join(tsorter_ids[i], (void **) &res))
             fprintf(stderr, "Ha ocurrido un esperando al Ordenador %d\n", i);
 
-        if (*res)
+        if (res)
             fprintf(stderr, "Ha ocurrido un error en el Ordenador %d\n", i);
     }
 
@@ -140,14 +141,14 @@ int main(int argc, char *argv[]) {
         if (pthread_join(tmerger_ids[i], (void **) &res))
             fprintf(stderr, "Ha ocurrido un esperando al Mezclador %d\n", i);
 
-        if (*res)
+        if (res)
             fprintf(stderr, "Ha ocurrido un error en el Mezclador %d\n", i);
     }
 
     if (pthread_join(twriter_id, (void **) &res))
         fprintf(stderr, "Ha ocurrido un esperando al Escritor\n");
 
-    if (*res)
+    if (res)
         fprintf(stderr, "Ha ocurrido un error en el Escritor\n");
 
     return 0;
@@ -172,7 +173,6 @@ void *sorter_thread(void *arg) {
 
         /* Toma el path de la variable global, lo hace NULL y avisa */
         path = global_path;
-        printf("haciendo null global path\n");
         global_path = NULL;
         pthread_cond_broadcast(&path_available);
 
@@ -186,9 +186,7 @@ void *sorter_thread(void *arg) {
             free(path);
             continue;
         }
-        Sequence_print(seq);
         free(path);
-        printf("impreso\n");
         Sequence_sort(seq);
 
         /* Pasa la secuencia a un mezclador libre */
@@ -200,13 +198,16 @@ void *sorter_thread(void *arg) {
         while (!free_mergers)
             pthread_cond_wait(&merger_available, &sorter_merger_mutex);
 
-        /* Luego busca y pasa la secuencia al disponible, y avisa */
-        for (i=0; i<nm; i++)
+        /* Luego busca y pasa la secuencia al disponible, lo marca como desocupado
+        y avisa */
+        for (i=0; i<nm; i++) {
             if (!global_seqs[i]) {
                 global_seqs[i] = seq;
+                free_mergers--;
                 pthread_cond_broadcast(&merger_available);
                 break;
             }
+        }
 
         pthread_mutex_unlock(&sorter_merger_mutex);
         /* ------ Fin región crítica ------ */
@@ -219,7 +220,6 @@ void *merger_thread(void *arg) {
     int n = *(int *) arg;
     Sequence *local_seq = Sequence_new(0);
 
-    printf("Mezclador creado, n=%d\n", n);
     for (;;) {
         Sequence *arriving_seq;
 
@@ -231,7 +231,7 @@ void *merger_thread(void *arg) {
         global_seqs[n] = NULL;
         pthread_cond_broadcast(&merger_available);
 
-        /* Mientras no haya trabajo o no sea el último paso */
+        /* Mientras no haya trabajo y no sea el último paso */
         while (!global_seqs[n] && !last_step)
             pthread_cond_wait(&merger_available, &sorter_merger_mutex);
 
@@ -243,13 +243,13 @@ void *merger_thread(void *arg) {
 
         /* Toma la secuencia y decrementa el número de mezcladores libres */
         arriving_seq = global_seqs[n];
-        free_mergers--;
 
         pthread_mutex_unlock(&sorter_merger_mutex);
         /* ------ Fin región crítica ------ */
 
         /* Mezcla la secuencia */
-        Sequence_merge(&local_seq, arriving_seq);
+        if (!Sequence_merge(&local_seq, arriving_seq))
+            fprintf(stderr, "Error al mezclar una secuencia\n");
     }
 
     /* -------- Región crítica -------- */
@@ -269,7 +269,7 @@ void *merger_thread(void *arg) {
 }
 
 void *writer_thread(void *arg) {
-    Sequence **seqs_arr = malloc(sizeof(Sequence)*nm);
+    Sequence **seqs_arr = malloc(sizeof(Sequence) * nm);
     int i;
 
     for (i=0; i<nm; i++) {
@@ -281,7 +281,7 @@ void *writer_thread(void *arg) {
 
         /* Toma la secuencia y avisa */
         seqs_arr[i] = writer_seq;
-        seqs_arr[i] = NULL;
+        writer_seq = NULL;
 
         pthread_cond_signal(&writer_available);
         pthread_mutex_unlock(&merger_writer_mutex);
