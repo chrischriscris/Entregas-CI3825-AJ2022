@@ -13,8 +13,6 @@ int main(int argc, char *argv[]) {
     Sequence *seq = Sequence_new(0);
     Sequence *seqs_arr[1];
 
-    seqs_arr[0] = seq;
-
     /* Valida los argumentos de línea de comandos */
     if (argc != 3) {
         fprintf(stderr, "Uso: %s <raiz> <archivo salida>\n", argv[0]);
@@ -29,6 +27,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Ha habido un error recorriendo los directorios\n");
         return 1;
     }
+    seqs_arr[0] = seq;
 
     if (!Sequence_write_merged(seqs_arr, 1, outfile)) {
         fprintf(stderr, "Ha habido un error en el programa\n");

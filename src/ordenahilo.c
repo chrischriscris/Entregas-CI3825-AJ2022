@@ -129,6 +129,7 @@ int main(int argc, char *argv[]) {
         if (res)
             fprintf(stderr, "Ha ocurrido un error en el Ordenador %d\n", i);
     }
+    free(tsorter_ids);
 
     /* Cuando los ordenadores terminaron, ya se puede empezar a pasar las
     secuencias a los mezcladores. */
@@ -144,6 +145,9 @@ int main(int argc, char *argv[]) {
         if (res)
             fprintf(stderr, "Ha ocurrido un error en el Mezclador %d\n", i);
     }
+    free(global_seqs);
+    free(tmerger_ids);
+    free(merger_n);
 
     if (pthread_join(twriter_id, (void **) &res))
         fprintf(stderr, "Ha ocurrido un esperando al Escritor\n");
