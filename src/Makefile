@@ -37,7 +37,7 @@ ordena: ordena.c utils.o sequence.o
 	$(CC) $(CFLAGS) -pthread -o ordena ordena.c sequence.o utils.o
 
 
-utils.o: utils.c sequence.o
+utils.o: utils.c
 	$(CC) $(CFLAGS) -c utils.c
 
 sequence.o: sequence.c
