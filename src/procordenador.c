@@ -19,7 +19,7 @@
  * @param to_merger Arreglo de extremos de lecturas de pipes para pasar la
  *     secuencia al mezclador, de tamaño nm. Debe liberarse su memoria.
  */
-void do_sorter_work(
+void sorter_process(
     int n, int nm,
     int sorter_queue, int merger_queue,
     int from_reader,  int *to_merger

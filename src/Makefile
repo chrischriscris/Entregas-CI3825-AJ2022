@@ -5,8 +5,11 @@ all: ordenaproc ordenahilo ordena
 
 # Proceso
 
-ordenaproc: ordenaproc.c procordenador.o procmezclador.o procescritor.o sequence.o utils.o
-	$(CC) $(CFLAGS) -o ordenaproc ordenaproc.c procordenador.o procmezclador.o procescritor.o sequence.o utils.o
+ordenaproc: ordenaproc.c procworkers.o sequence.o utils.o
+	$(CC) $(CFLAGS) -o ordenaproc ordenaproc.c procworkers.o sequence.o utils.o
+
+procworkers.o: procworkers.c
+	$(CC) $(CFLAGS) -c procworkers.c
 
 procordenador.o: procordenador.c
 	$(CC) $(CFLAGS) -c procordenador.c
@@ -19,22 +22,20 @@ procescritor.o: procescritor.c
 
 # Hilo
 
-ordenahilo: ordenahilo.c utils.o
-	$(CC) $(CFLAGS) -pthread -o ordenahilo ordenahilo.c sequence.o utils.o
+ordenahilo: ordenahilo.c sequence.o utils.o threadworkers.o sharedvars.o
+	$(CC) $(CFLAGS) -pthread -o ordenahilo ordenahilo.c sequence.o utils.o threadworkers.o sharedvars.o
 
-# hiloordenador.o: hiloordenador.c
-# 	$(CC) $(CFLAGS) -c hiloordenador.c
+threadworkers.o: threadworkers.c
+	$(CC) $(CFLAGS) -c threadworkers.c
 
-# hilomezclador.o: hilomezclador.c
-# 	$(CC) $(CFLAGS) -c hilomezclador.c
-
-# hiloescritor.o: hiloescritor.c
-# 	$(CC) $(CFLAGS) -c hiloescritor.c
+sharedvars.o: sharedvars.c
+	$(CC) $(CFLAGS) -c sharedvars.c
 
 # General
 
-ordena: ordena.c
+ordena: ordena.c utils.o sequence.o
 	$(CC) $(CFLAGS) -pthread -o ordena ordena.c sequence.o utils.o
+
 
 utils.o: utils.c sequence.o
 	$(CC) $(CFLAGS) -c utils.c

@@ -15,7 +15,7 @@
  *     secuencia del mezclador, de tamaño nm. Debe liberarse su memoria.
  * @param path Ruta a archivo de salida
  */
-void do_writer_work(int nm, int from_reader, int *from_merger, char *path) {
+void writer_process(int nm, int from_reader, int *from_merger, char *path) {
     int i;
     Sequence **seqs_arr = malloc(sizeof(Sequence)*nm);
 

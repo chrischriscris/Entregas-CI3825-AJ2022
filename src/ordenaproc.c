@@ -3,10 +3,8 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 
+#include "procworkers.h"
 #include "utils.h"
-#include "procordenador.h"
-#include "procmezclador.h"
-#include "procescritor.h"
 
 #define READ_END 0
 #define WRITE_END 1
@@ -95,7 +93,7 @@ int main(int argc, char *argv[]) {
             close(reader_sorter[i][WRITE_END]);
 
             /* Empieza a trabajar */
-            do_sorter_work(
+            sorter_process(
                 i, nm,
                 sorter_queue[WRITE_END], merger_queue[READ_END],
                 reader_sorter[i][READ_END], to_merger
@@ -158,7 +156,7 @@ int main(int argc, char *argv[]) {
             free(reader_sorter);
 
             /* Empieza a trabajar */
-            do_merger_work(
+            merger_process(
                 i,
                 merger_queue[WRITE_END],
                 sorter_merger[i][READ_END],
@@ -215,7 +213,7 @@ int main(int argc, char *argv[]) {
             close(merger_writer[j][WRITE_END]);
         }
 
-        do_writer_work(nm, reader_writer[READ_END], from_merger, outfile);
+        writer_process(nm, reader_writer[READ_END], from_merger, outfile);
 
         for (j=0; j<nm; j++) free(merger_writer[j]);
         free(merger_writer);
