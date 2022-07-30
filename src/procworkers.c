@@ -6,7 +6,9 @@
 #include "sequence.h"
 
 /**
- * Hace el trabajo del ordenador.
+ * Proceso ordenador de ordenahilo.c, se encola como ordenador desocupado
+ * para recibir una secuencia del lector, ordenarla y pasarla a un mezclador
+ * desocupado.
  * 
  * @param n Número de ordenador.
  * @param nm Número de mezcladores.
@@ -89,7 +91,12 @@ void sorter_process(
 }
 
 /**
- * Hace el trabajo del mezclador.
+ * Proceso mezclador de ordenahilo.c, mantiene una secuencia local.
+ * 
+ * Se encola como mezclador desocupado para recibir una secuencia ya ordenada del ordenador,
+ * mezclarla de manera ordenada con su secuencia local.
+ * 
+ * Cuando el lector indica, pasa su secuencia al escritor.
  * 
  * @param n Número de mezclador.
  * @param merger_queue Extremo de escritura de pipe para encolarse como
@@ -155,7 +162,11 @@ void merger_process(int n, int merger_queue, int from_sorter,  int to_writer) {
 }
 
 /**
- * Hace el trabajo del escritor.
+ * Proceso escritor de ordenahilo.c, mantiene un arreglo de secuencias.
+ * 
+ * Cuando el lector le avisa, recibe las secuencias de los mezcladores y
+ * al final escribe en un archivo los elementos de todas las secuencias de
+ * forma ordenada.
  * 
  * @param nm Número de mezcladores.
  * @param from_reader Extremo de lectura de pipe para obtener un mezclador

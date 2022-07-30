@@ -13,6 +13,7 @@ home
 entrega
 src_pdf
 testdir*
+informe
 
 # Prerequisites
 *.d
