@@ -6,6 +6,14 @@
 #include "sharedvars.h"
 #include "sequence.h"
 
+/**
+ * Hilo ordenador de ordenahilo.c,
+ * 
+ * Toma un archivo dado por el lector para ordenar la secuencia contenida en él,
+ * ordenarla y pasarla a un mezclador desocupado.
+ * 
+ * @param arg Apuntador al número de ordenadores.
+ */
 void *sorter_thread(void *arg) {
     int nm = *(int *) arg;
 
@@ -70,6 +78,16 @@ void *sorter_thread(void *arg) {
     pthread_exit(0);
 }
 
+/**
+ * Hilo mezclador de ordenahilo.c, mantiene una secuencia local.
+ * 
+ * Se marca como mezclador desocupado para recibir una secuencia ya ordenada
+ * del ordenador y mezclarla de manera ordenada con su secuencia local.
+ * 
+ * Cuando el lector indica, pasa su secuencia al escritor.
+ * 
+ * @param n Apuntador al número de mezclador del hilo.
+ */
 void *merger_thread(void *arg) {
     int n = *(int *) arg;
     Sequence *local_seq = Sequence_new(0);
@@ -122,6 +140,15 @@ void *merger_thread(void *arg) {
     pthread_exit(0);
 }
 
+/**
+ * Hilo escritor de ordenahilo.c, mantiene un arreglo de secuencias.
+ * 
+ * Cuando el lector le avisa, recibe las secuencias de los mezcladores y
+ * al final escribe en un archivo los elementos de todas las secuencias de
+ * forma ordenada.
+ * 
+ * @param nm Apuntador al número de mezcladores.
+ */
 void *writer_thread(void *arg) {
     int nm = *(int *) arg;
     Sequence **seqs_arr = malloc(sizeof(Sequence) * nm);
