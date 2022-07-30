@@ -14,15 +14,12 @@ extern char *global_path;
 extern Sequence **global_seqs;
 extern int free_mergers;
 
-/* QUITAR */
-extern int nm;
-extern char *outfile;
-
 /* Flag indicando si ya se debe comenzar el último paso */
 extern int last_step;
 
 /* Donde el mezclador pasa secuencias al escritor */
 extern Sequence *writer_seq;
+extern char *outfile;
 
 /* Mutex y variables de condición */
 extern pthread_mutex_t path_mutex;
