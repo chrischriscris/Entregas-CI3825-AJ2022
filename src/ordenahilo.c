@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
     pthread_mutex_unlock(&path_mutex);
     /* ------ Fin región crítica ------ */
 
-    /* Espera que todos los ordenadores terminen */
+    /* Espera que todos los ordenadores terminen y libera sus recursos */
     for (i=0; i<ns; i++) {
         if (pthread_join(tsorter_ids[i], (void **) &res))
             fprintf(stderr, "Ha ocurrido un esperando al Ordenador %d\n", i);
@@ -105,6 +105,8 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Ha ocurrido un error en el Ordenador %d\n", i);
     }
     free(tsorter_ids);
+    pthread_mutex_destroy(&path_mutex);
+    pthread_cond_destroy(&path_available);
 
     /* Cuando los ordenadores terminaron, ya se puede empezar a pasar las
     secuencias a los mezcladores. */
@@ -112,7 +114,7 @@ int main(int argc, char *argv[]) {
     last_step = 1;
     pthread_cond_broadcast(&merger_available);
 
-    /* Espera a que todos los mezcladores terminen */
+    /* Espera a que todos los mezcladores terminen y libera sus recursos */
     for (i=0; i<nm; i++) {
         if (pthread_join(tmerger_ids[i], (void **) &res))
             fprintf(stderr, "Ha ocurrido un esperando al Mezclador %d\n", i);
@@ -123,12 +125,17 @@ int main(int argc, char *argv[]) {
     free(global_seqs);
     free(tmerger_ids);
     free(merger_n);
+    pthread_mutex_destroy(&sorter_merger_mutex);
+    pthread_cond_destroy(&merger_available);
 
+    /* Espera que el escritor termine y libera sus recursos */
     if (pthread_join(twriter_id, (void **) &res))
         fprintf(stderr, "Ha ocurrido un esperando al Escritor\n");
 
     if (res)
         fprintf(stderr, "Ha ocurrido un error en el Escritor\n");
+    pthread_mutex_destroy(&merger_writer_mutex);
+    pthread_cond_destroy(&writer_available);
 
     return 0;
 }
