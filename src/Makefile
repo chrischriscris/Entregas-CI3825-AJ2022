@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic -g
+CFLAGS = -ansi -Wall -pedantic
 
 all: ordenaproc ordenahilo ordena
 
