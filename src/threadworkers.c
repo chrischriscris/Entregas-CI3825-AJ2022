@@ -1,16 +1,14 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
 #include <pthread.h>
 
 #include "threadworkers.h"
 #include "sharedvars.h"
 #include "sequence.h"
-#include "utils.h"
 
 void *sorter_thread(void *arg) {
+    int nm = *(int *) arg;
+
     for (;;) {
         Sequence *seq;
         char *path;
@@ -125,6 +123,7 @@ void *merger_thread(void *arg) {
 }
 
 void *writer_thread(void *arg) {
+    int nm = *(int *) arg;
     Sequence **seqs_arr = malloc(sizeof(Sequence) * nm);
     int i;
 

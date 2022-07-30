@@ -14,7 +14,6 @@ Sequence **global_seqs;
 int free_mergers = 0;
 
 /* QUITAR */
-int nm;
 char *outfile;
 
 /* Flag indicando si ya se debe comenzar el último paso */

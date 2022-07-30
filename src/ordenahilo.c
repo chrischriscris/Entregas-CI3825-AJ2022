@@ -11,7 +11,7 @@
 #include "utils.h"
 
 int main(int argc, char *argv[]) {
-    int i, ns, *merger_n, *res;
+    int i, ns, nm, *merger_n, *res;
     char *root;
     pthread_t *tsorter_ids, *tmerger_ids, twriter_id;
     int sorter_count, merger_count;
@@ -34,9 +34,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    /* Se inicializa el arreglo con valores distintos de nulo,
-    cada mezclador se marca como desocupado haciendo
-    global_seqs[i] = NULL */
+    /* Se inicializa el arreglo con valores distintos de nulo, cada mezclador
+    se marca como desocupado haciendo global_seqs[i] = NULL */
     global_seqs = malloc(sizeof(Sequence *) * nm);
     for (i = 0; i<nm; i++) global_seqs[i] = (Sequence *) 1;
 
@@ -46,7 +45,7 @@ int main(int argc, char *argv[]) {
 
     /* ================ ORDENADORES ================ */
     for (i=0; i<ns; i++) {
-        if (pthread_create(&tsorter_ids[i], NULL, sorter_thread, NULL)) {
+        if (pthread_create(&tsorter_ids[i], NULL, sorter_thread, &nm)) {
             fprintf(stderr, "Error creando ordenador %d\n", (int) i);
             
             /* Termina el proceso principal solo si no hay por lo menos
@@ -71,7 +70,7 @@ int main(int argc, char *argv[]) {
     }
 
     /* ================ ESCRITOR ================ */
-    if (pthread_create(&twriter_id, NULL, writer_thread, NULL)) {
+    if (pthread_create(&twriter_id, NULL, writer_thread, &nm)) {
         fprintf(stderr, "Error creando escritor\n");
         exit(1);
     }
