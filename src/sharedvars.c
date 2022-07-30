@@ -13,14 +13,12 @@ char *global_path;
 Sequence **global_seqs;
 int free_mergers = 0;
 
-/* QUITAR */
-char *outfile;
-
 /* Flag indicando si ya se debe comenzar el último paso */
 int last_step = 0;
 
 /* Donde el mezclador pasa secuencias al escritor */
 Sequence *writer_seq;
+char *outfile;
 
 /* Inicializa los mutex y variables de condición a usar */
 pthread_mutex_t path_mutex = PTHREAD_MUTEX_INITIALIZER;
