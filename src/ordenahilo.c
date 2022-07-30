@@ -34,10 +34,15 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    /* Se inicializa el arreglo con valores distintos de nulo,
+    cada mezclador se marca como desocupado haciendo
+    global_seqs[i] = NULL */
+    global_seqs = malloc(sizeof(Sequence *) * nm);
+    for (i = 0; i<nm; i++) global_seqs[i] = (Sequence *) 1;
+
     tsorter_ids = malloc(sizeof(pthread_t) * ns);
     tmerger_ids = malloc(sizeof(pthread_t) * nm);
     merger_n = malloc(sizeof(int) * nm);
-    global_seqs = malloc(sizeof(Sequence *) * nm);
 
     /* ================ ORDENADORES ================ */
     for (i=0; i<ns; i++) {

@@ -97,7 +97,7 @@ void *merger_thread(void *arg) {
             break;
         }
 
-        /* Toma la secuencia y decrementa el número de mezcladores libres */
+        /* Toma la secuencia */
         arriving_seq = global_seqs[n];
 
         pthread_mutex_unlock(&sorter_merger_mutex);
