@@ -1,3 +1,23 @@
+/**
+ * Entry-point del ordenahilo. Se ejecuta indicando el número de ordenadores,
+ * el número de mezcladores, una ruta a un directorio raíz y el nombre de un
+ * archivo donde se escribirán los resultados.
+ * 
+ * Ordena todos los archivos .txt que se encuentren en el directorio raíz y sus
+ * sub-directorios, de forma recursiva. Cada ordenamiento se ejecuta de forma
+ * concurrente/paralela en un hilo ordenador distinto. Luego cada ordenador pasa su
+ * secuencia ordenada a un mezclador, que mezcla la secuencia con una local,
+ * y finalmente cada mezclador pasa sus secuencias a un escritor, que las
+ * escribe de forma ordenada en un archivo de salida.
+ * 
+* Se ejecuta de la forma:
+ * 
+ * ordenahilo <num Ordenadores> <num Mezcladores> <raiz> <archivo salida>
+ * 
+ * Autor: Christopher Gómez.
+ * Fecha: 30-07-2022.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

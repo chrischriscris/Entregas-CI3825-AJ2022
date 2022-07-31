@@ -1,15 +1,18 @@
 /**
- * Entry-point del ordenaproc. Se ejecuta indicando la ruta a un directorio que
- * servirá de raíz de cada comando. Soporta los comandos:
+ * Entry-point del ordenaproc. Se ejecuta indicando el número de ordenadores,
+ * el número de mezcladores, una ruta a un directorio raíz y el nombre de un
+ * archivo donde se escribirán los resultados.
  * 
- * * wc: Por directorio dentro del árbol, imprime el total de líneas y
- *     caracteres de los archivos regulares que contiene en forma recursiva,
- *     incluyendo la raíz del árbol.
+ * Ordena todos los archivos .txt que se encuentren en el directorio raíz y sus
+ * sub-directorios, de forma recursiva. Cada ordenamiento se ejecuta de forma
+ * concurrente en un proceso ordenador distinto. Luego cada ordenador pasa su
+ * secuencia ordenada a un mezclador, que mezcla la secuencia con una local,
+ * y finalmente cada mezclador pasa sus secuencias a un escritor, que las
+ * escribe de forma ordenada en un archivo de salida.
  * 
- * * find: Imprime los nombres de los archivos que tienen en su nombre la
- *     cadena de su argumento. Sensible a mayúsculas.
+ * Se ejecuta de la forma:
  * 
- * * ifind: Similar a find, no sensible a mayúsculas.
+ * ordenaproc <num Ordenadores> <num Mezcladores> <raiz> <archivo salida>
  * 
  * Autor: Christopher Gómez.
  * Fecha: 30-07-2022.
