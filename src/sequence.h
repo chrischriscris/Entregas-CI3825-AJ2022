@@ -7,7 +7,13 @@
  * Estructura que implementa una secuencia de enteros
  * mediante un arreglo dinámico.
  * 
- * Soporta las operaciones de:
+ * Soporta las operaciones de inserción, encogimiento,
+ * mezcla ordenada y ordenamiento,
+ * 
+ * Campos:
+ *     arr: Apuntador al arreglo interno.
+ *     used: Cantidad de elementos del arreglo en uso.
+ *     size: Tamaño total del arreglo.
  */
 typedef struct {
   int64_t *arr; /* Apuntador a arreglo interno */

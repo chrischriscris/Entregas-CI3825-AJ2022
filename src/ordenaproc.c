@@ -1,3 +1,20 @@
+/**
+ * Entry-point del ordenaproc. Se ejecuta indicando la ruta a un directorio que
+ * servirá de raíz de cada comando. Soporta los comandos:
+ * 
+ * * wc: Por directorio dentro del árbol, imprime el total de líneas y
+ *     caracteres de los archivos regulares que contiene en forma recursiva,
+ *     incluyendo la raíz del árbol.
+ * 
+ * * find: Imprime los nombres de los archivos que tienen en su nombre la
+ *     cadena de su argumento. Sensible a mayúsculas.
+ * 
+ * * ifind: Similar a find, no sensible a mayúsculas.
+ * 
+ * Autor: Christopher Gómez.
+ * Fecha: 30-07-2022.
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
