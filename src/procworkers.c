@@ -1,3 +1,10 @@
+/**
+ * Implementación de los procesos ordenador, mezclador y escritor de ordenaproc.c.
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>

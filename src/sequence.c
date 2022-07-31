@@ -1,3 +1,12 @@
+/**
+ * Implementación de secuencia como arreglo dinámico.
+ * Soporta las operaciones de creación, inserción, encogimiento, mezcla
+ * y eliminación.
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 

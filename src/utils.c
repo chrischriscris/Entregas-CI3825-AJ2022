@@ -1,3 +1,11 @@
+/**
+ * Implementación de funciones de utilidad para las implementaciones de
+ * ordenahilo y ordenaproc.
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>

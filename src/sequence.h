@@ -1,8 +1,6 @@
 #ifndef __SEQUENCE_H__
 #define __SEQUENCE_H__
 
-#include <aio.h>
-
 /**
  * Estructura que implementa una secuencia de enteros
  * mediante un arreglo dinámico.

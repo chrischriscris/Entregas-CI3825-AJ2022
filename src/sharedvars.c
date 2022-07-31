@@ -1,3 +1,11 @@
+/**
+ * Definición de variables compartidas entre hilos de ordenahilo.c, que fueron
+ * declaradas en sharedvars.h.
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
+
 #include <pthread.h>
 
 #include "sharedvars.h"

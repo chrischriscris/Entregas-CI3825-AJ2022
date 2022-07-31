@@ -1,3 +1,10 @@
+/**
+ * Implementación de los hilos ordenador, mezclador y escritor de ordenaproc.c.
+ *
+ * Autor: Christopher Gómez.
+ * Fecha: 29-06-2022.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
