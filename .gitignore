@@ -2,11 +2,11 @@
 enunciado.pdf
 .vscode
 plan.txt
+ordena
 ordenaproc
 ordenahilo
 valgrind-command.txt
 *out.txt
-ordena
 
 # Directorios
 home

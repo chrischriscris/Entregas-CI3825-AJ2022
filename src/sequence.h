@@ -1,12 +1,14 @@
 #ifndef __SEQUENCE_H__
 #define __SEQUENCE_H__
 
+#include <aio.h>
+
 /**
  * Estructura que implementa una secuencia de enteros
  * mediante un arreglo dinámico.
  * 
  * Soporta las operaciones de inserción, encogimiento,
- * mezcla ordenada y ordenamiento,
+ * mezcla ordenada y ordenamiento.
  * 
  * Campos:
  *     arr: Apuntador al arreglo interno.
