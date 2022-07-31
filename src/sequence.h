@@ -16,9 +16,9 @@
  *     size: Tamaño total del arreglo.
  */
 typedef struct {
-  int64_t *arr; /* Apuntador a arreglo interno */
-  int used;    /* Cantidad de elementos en uso */
-  int size;    /* Tamaño total del arreglo */
+  int64_t *arr;
+  int used;
+  int size;
 } Sequence;
 
 Sequence *Sequence_new(int n);
