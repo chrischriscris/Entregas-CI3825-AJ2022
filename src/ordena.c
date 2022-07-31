@@ -1,3 +1,20 @@
+/**
+ * Entry-point del ordena. Se ejecuta indicando un directorio raíz y el nombre de un
+ * archivo donde se escribirán los resultados.
+ * 
+ * Ordena todos los archivos .txt que se encuentren en el directorio raíz y sus
+ * sub-directorios, de forma recursiva. Se ordena cada archivo y luego se mezcla
+ * de forma ordenada en una secuencia de forma acumulativa y finalmente escribe
+ * la secuencia resultante en el archivo de salida.
+ * 
+* Se ejecuta de la forma:
+ * 
+ * ordena <raiz> <archivo salida>
+ * 
+ * Autor: Christopher Gómez.
+ * Fecha: 30-07-2022.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
