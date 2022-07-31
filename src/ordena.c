@@ -7,7 +7,7 @@
  * de forma ordenada en una secuencia de forma acumulativa y finalmente escribe
  * la secuencia resultante en el archivo de salida.
  * 
-* Se ejecuta de la forma:
+ * Se ejecuta de la forma:
  * 
  * ordena <raiz> <archivo salida>
  * 
