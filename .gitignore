@@ -2,14 +2,23 @@
 enunciado.pdf
 .vscode
 plan.txt
+<<<<<<< HEAD
 out
 myutil
 valgrind-command.txt
 valgrind-out.txt
+=======
+ordena
+ordenaproc
+ordenahilo
+valgrind-command.txt
+*out.txt
+>>>>>>> proy2-ci3825/main
 
 # Directorios
 home
 entrega
+<<<<<<< HEAD
 src_pdf
 repla
 wc
@@ -17,6 +26,12 @@ wdt
 codif
 roll
 archivopesado
+=======
+benchmark
+src_pdf
+testdir*
+informe
+>>>>>>> proy2-ci3825/main
 
 # Prerequisites
 *.d
